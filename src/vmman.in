@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec -a vmman mono @prefix@/lib/vmman/vmman.exe "$@"

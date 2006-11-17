@@ -1,0 +1,32 @@
+AC_INIT(src/EntryPoint.cs)
+
+AM_INIT_AUTOMAKE(vmman, 0.1.0)
+AM_MAINTAINER_MODE
+
+AC_PROG_INTLTOOL([0.21])
+
+PKG_CHECK_MODULES(VMMAN, gtk-sharp-2.0 glade-sharp-2.0)
+VMMAN_LIBS="$VMMAN_LIBS -r:Mono.Posix"
+AC_SUBST(VMMAN_LIBS)
+
+dnl Check for Mono
+AC_PATH_PROG(MCS, gmcs)
+AC_PATH_PROG(MONO, mono)
+
+MCS_FLAGS="-codepage:utf8 -debug"
+AC_SUBST(MCS_FLAGS)
+
+dnl Intl
+ALL_LINGUAS=""
+GETTEXT_PACKAGE=vmman
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
+AM_GLIB_GNU_GETTEXT
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/vmman
+data/Makefile
+po/Makefile.in
+])

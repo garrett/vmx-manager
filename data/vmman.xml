@@ -1,0 +1,7 @@
+<ui>
+  <popup name="MachinePopup">
+    <menuitem action="Start" />
+    <menuitem action="Configure" />
+    <menuitem action="Remove" />
+  </popup>
+</ui>
