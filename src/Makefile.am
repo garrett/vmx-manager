@@ -1,12 +1,12 @@
 
-ASSEMBLIES = vmman.exe
+ASSEMBLIES = vmx-manager.exe
 
 asmdir = $(pkglibdir)
 asm_DATA = $(ASSEMBLIES)
 
-bin_SCRIPTS = vmman
+bin_SCRIPTS = vmx-manager
 
-VMMAN_SOURCE =				\
+VMXMAN_SOURCE =				\
 	ConfigDialog.cs			\
 	EntryPoint.cs			\
 	MainController.cs		\
@@ -18,13 +18,13 @@ VMMAN_SOURCE =				\
 	VMModel.cs			\
 	VMView.cs
 
-VMMAN_RESOURCES = defaults.vmx operating-systems.csv vmman.glade vmman.xml
+VMXMAN_RESOURCES = defaults.vmx operating-systems.csv vmx-manager.glade vmx-manager.xml
 
-VMMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMMAN_RESOURCES), $(top_srcdir)/data/$(resource))
+VMXMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMXMAN_RESOURCES), $(top_srcdir)/data/$(resource))
 
-VMMAN_EXPANDED_RESOURCES_BUILD = $(foreach resource,$(VMMAN_EXPANDED_RESOURCES), $(addprefix -resource:,$(resource)),$(notdir $(resource)))
+VMXMAN_EXPANDED_RESOURCES_BUILD = $(foreach resource,$(VMXMAN_EXPANDED_RESOURCES), $(addprefix -resource:,$(resource)),$(notdir $(resource)))
 
-vmman.exe: $(VMMAN_SOURCE) $(VMMAN_EXPANDED_RESOURCES)
-	$(MCS) -out:$@ $(VMMAN_SOURCE) $(VMMAN_EXPANDED_RESOURCES_BUILD) $(VMMAN_LIBS)
+vmx-manager.exe: $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES)
+	$(MCS) -out:$@ $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS)
 
 CLEANFILES = $(bin_SCRIPTS) $(ASSEMBLIES)

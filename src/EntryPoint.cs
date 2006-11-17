@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Gtk;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class EntryPoint {
         

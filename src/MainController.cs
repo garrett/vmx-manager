@@ -2,7 +2,7 @@ using System;
 using Gtk;
 using Mono.Unix;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class MainController {
 
@@ -20,7 +20,7 @@ namespace VMMan {
             set { vmview = value; }
         }
 
-        public VirtualMachineManager VMManager {
+        public VirtualMachineManager VmxManagerager {
             get { return manager; }
             set { manager = value; }
         }

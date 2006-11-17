@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace VMMan {
+namespace VmxManager {
 
     public enum ScsiDeviceType {
         Buslogic,

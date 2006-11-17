@@ -1,7 +1,7 @@
 using System;
 using Gtk;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class VMView : TreeView {
 

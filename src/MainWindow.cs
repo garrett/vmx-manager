@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Mono.Unix;
 using Gtk;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class MainWindow : Window {
 
@@ -59,7 +59,7 @@ namespace VMMan {
             manager = new VirtualMachineManager ();
             controller = new MainController ();
             controller.MainWindow = this;
-            controller.VMManager = manager;
+            controller.VmxManagerager = manager;
             
             Glade.XML xml = new Glade.XML ("vmman.glade", "mainContent");
             xml.Autoconnect (this);
@@ -103,7 +103,7 @@ namespace VMMan {
                                  controller.OnAddExisting)
             };
 
-            actions = new ActionGroup ("VMMan Actions");
+            actions = new ActionGroup ("VmxManager Actions");
             actions.Add (actionList);
 
             ui = new UIManager ();

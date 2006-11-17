@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class VirtualMachineManager {
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class OSModel : ListStore {
 

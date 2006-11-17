@@ -1,6 +1,6 @@
 using System;
 
-namespace VMMan {
+namespace VmxManager {
 
     public class Utility {
 
