@@ -1,0 +1,10 @@
+src/ConfigDialog.cs
+src/EntryPoint.cs
+src/MainController.cs
+src/MainWindow.cs
+src/OSModel.cs
+src/Utility.cs
+src/VMModel.cs
+src/VMView.cs
+src/VirtualMachine.cs
+src/VirtualMachineManager.cs

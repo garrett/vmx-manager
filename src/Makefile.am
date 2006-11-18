@@ -1,14 +1,18 @@
 
-ASSEMBLIES = vmx-manager.exe
+ASSEMBLY = vmx-manager.exe
 
 asmdir = $(pkglibdir)
-asm_DATA = $(ASSEMBLIES)
+asm_DATA = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config
 
 bin_SCRIPTS = vmx-manager
 
 VMXMAN_SOURCE =				\
 	ConfigDialog.cs			\
+	DeviceModel.cs			\
+	DeviceView.cs			\
 	EntryPoint.cs			\
+	GuestOperatingSystem.cs		\
+	IconThemeUtils.cs		\
 	MainController.cs		\
 	MainWindow.cs			\
 	OSModel.cs			\
@@ -25,6 +29,6 @@ VMXMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMXMAN_RESOURCES), $(top_srcdir
 VMXMAN_EXPANDED_RESOURCES_BUILD = $(foreach resource,$(VMXMAN_EXPANDED_RESOURCES), $(addprefix -resource:,$(resource)),$(notdir $(resource)))
 
 vmx-manager.exe: $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES)
-	$(MCS) -out:$@ $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS)
+	$(MCS) -debug -out:$@ $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS)
 
 CLEANFILES = $(bin_SCRIPTS) $(ASSEMBLIES)

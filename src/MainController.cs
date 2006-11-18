@@ -75,14 +75,14 @@ namespace VmxManager {
         }
         
         public void OnCreateFromIso (object o, EventArgs args) {
-            FileChooserDialog dialog = new FileChooserDialog ("Choose a CD image", window,
+            FileChooserDialog dialog = new FileChooserDialog (Catalog.GetString ("Choose a CD image"), window,
                                                               FileChooserAction.Open, Stock.Cancel,
                                                               ResponseType.Cancel, Stock.Open, ResponseType.Ok);
 
             dialog.LocalOnly = true;
 
             FileFilter filter = new FileFilter ();
-            filter.Name = "CD Images";
+            filter.Name = Catalog.GetString ("CD Images");
             filter.AddPattern ("*.iso");
 
             dialog.AddFilter (filter);
@@ -95,14 +95,15 @@ namespace VmxManager {
         }
         
         public void OnAddExisting (object o, EventArgs args) {
-            FileChooserDialog dialog = new FileChooserDialog ("Choose a virtual machine file", window,
+            FileChooserDialog dialog = new FileChooserDialog (Catalog.GetString ("Choose a virtual machine file"),
+                                                              window,
                                                               FileChooserAction.Open, Stock.Cancel,
                                                               ResponseType.Cancel, Stock.Open, ResponseType.Ok);
 
             dialog.LocalOnly = true;
 
             FileFilter filter = new FileFilter ();
-            filter.Name = "Virtual Machines";
+            filter.Name = Catalog.GetString ("Virtual Machines");
             filter.AddPattern ("*.vmx");
 
             dialog.AddFilter (filter);

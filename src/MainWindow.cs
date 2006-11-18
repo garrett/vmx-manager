@@ -61,10 +61,10 @@ namespace VmxManager {
             controller.MainWindow = this;
             controller.VmxManagerager = manager;
             
-            Glade.XML xml = new Glade.XML ("vmman.glade", "mainContent");
+            Glade.XML xml = new Glade.XML ("vmx-manager.glade", "mainContent");
             xml.Autoconnect (this);
 
-            xml = new Glade.XML ("vmman.glade", "placeholder");
+            xml = new Glade.XML ("vmx-manager.glade", "placeholder");
             xml.Autoconnect (this);
 
             vmview = new VMView (controller);
@@ -108,7 +108,7 @@ namespace VmxManager {
 
             ui = new UIManager ();
             ui.InsertActionGroup (actions, 0);
-            ui.AddUiFromResource ("vmman.xml");
+            ui.AddUiFromResource ("vmx-manager.xml");
 
             SetActionsSensitive ();
 

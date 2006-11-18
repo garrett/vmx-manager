@@ -18,105 +18,6 @@ namespace VmxManager {
         E1000
     }
     
-    public class GuestOperatingSystem : IComparable<GuestOperatingSystem> {
-
-        private static Dictionary<string, GuestOperatingSystem> oshash;
-
-        private bool legacy;
-        private ScsiDeviceType suggestedScsi;
-        private EthernetDeviceType suggestedEthernet;
-        private int suggestedRam;
-        private string name;
-        private string displayName;
-
-        public bool IsLegacy {
-            get { return legacy; }
-        }
-
-        public ScsiDeviceType SuggestedScsiDeviceType {
-            get { return suggestedScsi; }
-        }
-
-        public EthernetDeviceType SuggestedEthernetDeviceType {
-            get { return suggestedEthernet; }
-        }
-
-        public int SuggestedRam {
-            get { return suggestedRam; }
-        }
-
-        public string Name {
-            get { return name; }
-        }
-
-        public string DisplayName {
-            get { return displayName; }
-        }
-
-        public GuestOperatingSystem (bool legacy, ScsiDeviceType suggestedScsi, EthernetDeviceType suggestedEthernet,
-                                     int suggestedRam, string name, string displayName) {
-            this.legacy = legacy;
-            this.suggestedScsi = suggestedScsi;
-            this.suggestedEthernet = suggestedEthernet;
-            this.suggestedRam = suggestedRam;
-            this.name = name;
-            this.displayName = displayName;
-        }
-
-        public override bool Equals (object o) {
-            GuestOperatingSystem os = (o as GuestOperatingSystem);
-            if (os == null)
-                return false;
-
-            return os.Name == this.Name;
-        }
-
-        public override int GetHashCode () {
-            return this.Name.GetHashCode ();
-        }
-
-        public int CompareTo (GuestOperatingSystem os) {
-            return this.DisplayName.CompareTo (os.DisplayName);
-        }
-
-        private static void Load () {
-            oshash = new Dictionary<string, GuestOperatingSystem> ();
-
-            using (StreamReader reader = new StreamReader (Assembly.GetExecutingAssembly ().GetManifestResourceStream ("operating-systems.csv"))) {
-                string line;
-                while ((line = reader.ReadLine ()) != null) {
-                    string[] splitLine = line.Split (',');
-
-                    string displayName = splitLine[5];
-                    displayName = displayName.Trim ('"');
-
-                    GuestOperatingSystem os = new GuestOperatingSystem (splitLine[1] == "TRUE",
-                                                                        Utility.ParseScsiDeviceType (splitLine[3]),
-                                                                        Utility.ParseEthernetDeviceType (splitLine[2]),
-                                                                        Int32.Parse (splitLine[4]),
-                                                                        splitLine[0], displayName);
-
-                    oshash[splitLine[0]] = os;
-                }
-            }
-        }
-
-        public static ReadOnlyCollection<GuestOperatingSystem> List () {
-            List<GuestOperatingSystem> list = new List<GuestOperatingSystem> (oshash.Values);
-            list.Sort ();
-
-            return new ReadOnlyCollection<GuestOperatingSystem> (list);
-        }
-
-        public static GuestOperatingSystem Lookup (string name) {
-            if (oshash == null) {
-                Load ();
-            }
-
-            return oshash[name];
-        }
-    }
-
     public enum HardDiskType {
         SingleSparse,
         SplitSparse,
@@ -136,12 +37,39 @@ namespace VmxManager {
         Scsi,
     }
 
-    public class VirtualDisk {
+    public class VirtualDisk : IVirtualDevice {
         private string file;
-        private DiskDeviceType deviceType;
+        private DiskDeviceType diskType;
         private ushort devnum;
         private ushort busnum;
         private DiskBusType busType;
+
+        public VirtualDeviceType DeviceType {
+            get {
+                if (diskType == DiskDeviceType.HardDisk) {
+                    return VirtualDeviceType.HardDisk;
+                } else {
+                    return VirtualDeviceType.CdRom;
+                }
+            }
+        }
+
+        public string DisplayName {
+            get {
+                switch (diskType) {
+                case DiskDeviceType.HardDisk:
+                    return "Hard Disk";
+                case DiskDeviceType.CDRaw:
+                    return "CD-ROM (Physical)";
+                case DiskDeviceType.CDIso:
+                    return String.Format ("CD-ROM ({0})", Path.GetFileName (file));
+                case DiskDeviceType.CDLegacy:
+                    return "CD-ROM (Physical, Legacy mode)";
+                default:
+                    return String.Empty;
+                }
+            }
+        }
 
         public string FileName {
             get { return file; }
@@ -153,9 +81,9 @@ namespace VmxManager {
             }
         }
 
-        public DiskDeviceType DeviceType {
-            get { return deviceType; }
-            set { deviceType = value; }
+        public DiskDeviceType DiskType {
+            get { return diskType; }
+            set { diskType = value; }
         }
 
         public ushort BusNumber {
@@ -173,9 +101,9 @@ namespace VmxManager {
             set { busType = value; }
         }
 
-        public VirtualDisk (string file, DiskDeviceType deviceType, ushort busnum, ushort devnum, DiskBusType busType) {
+        public VirtualDisk (string file, DiskDeviceType diskType, ushort busnum, ushort devnum, DiskBusType busType) {
             this.FileName = file;
-            this.deviceType = deviceType;
+            this.diskType = diskType;
             this.busnum = busnum;
             this.devnum = devnum;
             this.busType = busType;
@@ -191,6 +119,18 @@ namespace VmxManager {
             
             return new VirtualDisk (file, DiskDeviceType.HardDisk, 0, 0, DiskBusType.Ide);
         }
+    }
+
+    public enum VirtualDeviceType {
+        HardDisk,
+        CdRom,
+        Ethernet,
+        Floppy
+    }
+
+    public interface IVirtualDevice {
+        VirtualDeviceType DeviceType { get; }
+        string DisplayName { get; }
     }
 
     public delegate void VirtualMachineHandler (object o, VirtualMachineArgs args);
@@ -429,7 +369,7 @@ namespace VmxManager {
                 string basekey = GetDiskBaseKey (disk);
                 dict[basekey + "present"] = "TRUE";
                 dict[basekey + "fileName"] = diskFile;
-                dict[basekey + "deviceType"] = DiskTypeToString (disk.DeviceType);
+                dict[basekey + "deviceType"] = DiskTypeToString (disk.DiskType);
             }
             
             using (StreamWriter writer = new StreamWriter (File.Open (file, FileMode.Create))) {

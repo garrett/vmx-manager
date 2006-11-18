@@ -6,21 +6,11 @@ namespace VmxManager {
     public class ConfigDialog : Dialog {
 
         private VirtualMachine machine;
-        private TreeView diskView;
-        private TreeView cdView;
-        private TreeView ethernetView;
+        private DeviceView devview;
+        private DeviceModel devmodel;
 
         [Glade.Widget]
         private Widget configDialogContent;
-
-        [Glade.Widget]
-        private Container hardDiskContent;
-
-        [Glade.Widget]
-        private Container cdContent;
-
-        [Glade.Widget]
-        private Container ethernetContent;
 
         [Glade.Widget]
         private Entry nameEntry;
@@ -34,13 +24,16 @@ namespace VmxManager {
         [Glade.Widget]
         private CheckButton soundToggle;
 
+        [Glade.Widget]
+        private Container deviceContent;
+
         public ConfigDialog (VirtualMachine machine, Window parent) :
             base ("Configure Virtual Machine", parent, DialogFlags.NoSeparator, Stock.Cancel, ResponseType.Cancel,
                   Stock.Ok, ResponseType.Ok) {
 
             this.machine = machine;
 
-            Glade.XML xml = new Glade.XML ("vmman.glade", "configDialogContent");
+            Glade.XML xml = new Glade.XML ("vmx-manager.glade", "configDialogContent");
             xml.Autoconnect (this);
 
             guestOsCombo.Model = new OSModel ();
@@ -49,17 +42,11 @@ namespace VmxManager {
             guestOsCombo.PackStart (renderer, false);
             guestOsCombo.AddAttribute (renderer, "text", 0);
 
-            diskView = new TreeView ();
-            diskView.Show ();
-            hardDiskContent.Add (diskView);
-
-            cdView = new TreeView ();
-            cdView.Show ();
-            cdContent.Add (cdView);
-
-            ethernetView = new TreeView ();
-            ethernetView.Show ();
-            ethernetContent.Add (ethernetView);
+            devview = new DeviceView ();
+            devmodel = new DeviceModel (machine);
+            devview.Model = devmodel;
+            deviceContent.Add (devview);
+            devview.Show ();
 
             VBox.Add (configDialogContent);
             DefaultWidth = 400;
