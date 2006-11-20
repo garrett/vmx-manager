@@ -27,6 +27,18 @@ namespace VmxManager {
         [Glade.Widget]
         private Container deviceContent;
 
+        [Glade.Widget]
+        private Menu addDevicePopup;
+
+        [Glade.Widget]
+        private ToggleButton addDeviceButton;
+
+        [Glade.Widget]
+        private Button removeDeviceButton;
+
+        [Glade.Widget]
+        private Button configureDeviceButton;
+
         public ConfigDialog (VirtualMachine machine, Window parent) :
             base ("Configure Virtual Machine", parent, DialogFlags.NoSeparator, Stock.Cancel, ResponseType.Cancel,
                   Stock.Ok, ResponseType.Ok) {
@@ -36,6 +48,9 @@ namespace VmxManager {
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "configDialogContent");
             xml.Autoconnect (this);
 
+            xml = new Glade.XML ("vmx-manager.glade", "addDevicePopup");
+            xml.Autoconnect (this);
+
             guestOsCombo.Model = new OSModel ();
             
             CellRendererText renderer = new CellRendererText ();
@@ -43,14 +58,27 @@ namespace VmxManager {
             guestOsCombo.AddAttribute (renderer, "text", 0);
 
             devview = new DeviceView ();
+            devview.Selection.Changed += OnDeviceSelectionChanged;
             devmodel = new DeviceModel (machine);
             devview.Model = devmodel;
             deviceContent.Add (devview);
             devview.Show ();
 
+            addDeviceButton.Toggled += delegate {
+                if (addDeviceButton.Active) {
+                    addDevicePopup.Popup ();
+                }
+            };
+
+            addDevicePopup.Unmapped += delegate {
+                addDeviceButton.Active = false;
+            };
+
+            removeDeviceButton.Clicked += OnRemoveDevice;
+            configureDeviceButton.Clicked += OnConfigureDevice;
+
             VBox.Add (configDialogContent);
-            DefaultWidth = 400;
-            DefaultHeight = 300;
+            DefaultHeight = 400;
 
             Load ();
         }
@@ -97,6 +125,51 @@ namespace VmxManager {
             }
 
             Destroy ();
+        }
+
+        private void OnAddHardDisk (object o, EventArgs args) {
+            Console.WriteLine ("Adding hard disk");
+        }
+
+        private void OnAddCd (object o, EventArgs args) {
+            Console.WriteLine ("Adding cd rom");
+        }
+
+        private void OnAddEthernet (object o, EventArgs args) {
+            Console.WriteLine ("Adding ethernet");
+        }
+
+        private void OnAddFloppy (object o, EventArgs args) {
+            Console.WriteLine ("Adding floppy");
+        }
+
+        private void OnRemoveDevice (object o, EventArgs args) {
+            IVirtualDevice device = devview.GetSelectedDevice ();
+            switch (device.DeviceType) {
+            case VirtualDeviceType.HardDisk:
+                machine.RemoveHardDisk ((VirtualHardDisk) device);
+                break;
+            case VirtualDeviceType.CdRom:
+                break;
+            case VirtualDeviceType.Ethernet:
+                machine.RemoveEthernetDevice ((VirtualEthernet) device);
+                break;
+            default:
+                break;
+            }
+        }
+
+        private void OnConfigureDevice (object o, EventArgs args) {
+        }
+
+        private void OnDeviceSelectionChanged (object o, EventArgs args) {
+            SetButtonsSensitive ();
+        }
+
+        private void SetButtonsSensitive () {
+            bool selected = devview.Selection.CountSelectedRows () > 0;
+
+            removeDeviceButton.Sensitive = configureDeviceButton.Sensitive = selected;
         }
     }
 }

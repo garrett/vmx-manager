@@ -4,129 +4,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Mono.Unix;
 
 namespace VmxManager {
-
-    public enum ScsiDeviceType {
-        Buslogic,
-        LSILogic,
-    }
-    
-    public enum EthernetDeviceType {
-        PCnet,
-        VMXnet,
-        E1000
-    }
-    
-    public enum HardDiskType {
-        SingleSparse,
-        SplitSparse,
-        SingleFlat,
-        SplitFlat
-    }
-
-    public enum DiskDeviceType {
-        HardDisk,
-        CDRaw,
-        CDIso,
-        CDLegacy
-    }
-
-    public enum DiskBusType {
-        Ide,
-        Scsi,
-    }
-
-    public class VirtualDisk : IVirtualDevice {
-        private string file;
-        private DiskDeviceType diskType;
-        private ushort devnum;
-        private ushort busnum;
-        private DiskBusType busType;
-
-        public VirtualDeviceType DeviceType {
-            get {
-                if (diskType == DiskDeviceType.HardDisk) {
-                    return VirtualDeviceType.HardDisk;
-                } else {
-                    return VirtualDeviceType.CdRom;
-                }
-            }
-        }
-
-        public string DisplayName {
-            get {
-                switch (diskType) {
-                case DiskDeviceType.HardDisk:
-                    return "Hard Disk";
-                case DiskDeviceType.CDRaw:
-                    return "CD-ROM (Physical)";
-                case DiskDeviceType.CDIso:
-                    return String.Format ("CD-ROM ({0})", Path.GetFileName (file));
-                case DiskDeviceType.CDLegacy:
-                    return "CD-ROM (Physical, Legacy mode)";
-                default:
-                    return String.Empty;
-                }
-            }
-        }
-
-        public string FileName {
-            get { return file; }
-            set {
-                file = value;
-                if (file != null && file != "auto detect") {
-                    file = Path.GetFullPath (file);
-                }
-            }
-        }
-
-        public DiskDeviceType DiskType {
-            get { return diskType; }
-            set { diskType = value; }
-        }
-
-        public ushort BusNumber {
-            get { return busnum; }
-            set { busnum = value; }
-        }
-
-        public ushort DeviceNumber {
-            get { return devnum; }
-            set { devnum = value; }
-        }
-
-        public DiskBusType BusType {
-            get { return busType; }
-            set { busType = value; }
-        }
-
-        public VirtualDisk (string file, DiskDeviceType diskType, ushort busnum, ushort devnum, DiskBusType busType) {
-            this.FileName = file;
-            this.diskType = diskType;
-            this.busnum = busnum;
-            this.devnum = devnum;
-            this.busType = busType;
-        }
-
-        public static VirtualDisk CreateHardDisk (string file, long sizeInMb, HardDiskType type) {
-            Process proc = Process.Start (String.Format ("qemu-img create -f vmdk \"{0}\" \"{1}\"",
-                                                         file, sizeInMb * 1024));
-            proc.WaitForExit ();
-            if (proc.ExitCode != 0) {
-                throw new ApplicationException ("Failed to create virtual disk");
-            }
-            
-            return new VirtualDisk (file, DiskDeviceType.HardDisk, 0, 0, DiskBusType.Ide);
-        }
-    }
-
-    public enum VirtualDeviceType {
-        HardDisk,
-        CdRom,
-        Ethernet,
-        Floppy
-    }
 
     public interface IVirtualDevice {
         VirtualDeviceType DeviceType { get; }
@@ -152,7 +32,18 @@ namespace VmxManager {
 
         private string file;
         private Dictionary<string, string> dict = new Dictionary<string, string> ();
-        private List<VirtualDisk> disks = new List<VirtualDisk> ();
+        
+        private List<VirtualHardDisk> hardDisks = new List<VirtualHardDisk> ();
+        private List<VirtualCdDrive> cds = new List<VirtualCdDrive> ();
+
+        private List<VirtualEthernet> ethernetDevices = new List<VirtualEthernet> ();
+
+        public event VirtualHardDiskHandler HardDiskAdded;
+        public event VirtualHardDiskHandler HardDiskRemoved;
+        public event VirtualCdDriveHandler CdDriveAdded;
+        public event VirtualCdDriveHandler CdDriveRemoved;
+        public event VirtualEthernetHandler EthernetDeviceAdded;
+        public event VirtualEthernetHandler EthernetDeviceRemoved;
 
         public string FileName {
             get { return file; }
@@ -192,8 +83,16 @@ namespace VmxManager {
             set { dict["sound.present"] = value ? "TRUE" : "FALSE"; }
         }
 
-        public ReadOnlyCollection<VirtualDisk> Disks {
-            get { return new ReadOnlyCollection<VirtualDisk> (disks); }
+        public ReadOnlyCollection<VirtualHardDisk> HardDisks {
+            get { return new ReadOnlyCollection<VirtualHardDisk> (hardDisks); }
+        }
+
+        public ReadOnlyCollection<VirtualCdDrive> CdDrives {
+            get { return new ReadOnlyCollection<VirtualCdDrive> (cds); }
+        }
+
+        public ReadOnlyCollection<VirtualEthernet> EthernetDevices {
+            get { return new ReadOnlyCollection<VirtualEthernet> (ethernetDevices); }
         }
 
         public bool IsRunning {
@@ -231,17 +130,6 @@ namespace VmxManager {
             return machine;
         }
 
-        public void AddDisk (VirtualDisk disk) {
-            foreach (VirtualDisk existingDisk in disks) {
-                if (existingDisk.BusType == disk.BusType && existingDisk.BusNumber == disk.BusNumber &&
-                    existingDisk.DeviceNumber == disk.DeviceNumber) {
-                    throw new ApplicationException ("There is already a disk at this position");
-                }
-            }
-            
-            disks.Add (disk);
-        }
-
         private string GetDiskBaseKey (VirtualDisk disk) {
             return GetDiskBaseKey (disk.BusType, disk.BusNumber, disk.DeviceNumber);
         }
@@ -254,15 +142,85 @@ namespace VmxManager {
             }
         }
 
-        public void RemoveDisk (VirtualDisk disk) {
-            if (disks.Contains (disk)) {
-                disks.Remove (disk);
+        public void AddHardDisk (VirtualHardDisk disk) {
+            hardDisks.Add (disk);
 
-                string basekey = GetDiskBaseKey (disk);
+            VirtualHardDiskHandler handler = HardDiskAdded;
+            if (handler != null) {
+                handler (this, new VirtualHardDiskArgs (disk));
+            }
+        }
+
+        public void RemoveHardDisk (VirtualHardDisk disk) {
+            if (hardDisks.Contains (disk)) {
+                hardDisks.Remove (disk);
+
+                RemoveDiskValues (disk);
+
+                VirtualHardDiskHandler handler = HardDiskRemoved;
+                if (handler != null) {
+                    handler (this, new VirtualHardDiskArgs (disk));
+                }
+            }
+        }
+
+        private void RemoveDiskValues (VirtualDisk disk) {
+            string basekey = GetDiskBaseKey (disk);
+            foreach (string key in new List<string> (dict.Keys)) {
+                if (key.StartsWith (basekey)) {
+                    dict.Remove (key);
+                }
+            }
+        }
+
+        public void AddCdDrive (VirtualCdDrive drive) {
+            cds.Add (drive);
+
+            VirtualCdDriveHandler handler = CdDriveAdded;
+            if (handler != null) {
+                handler (this, new VirtualCdDriveArgs (drive));
+            }
+        }
+
+        public void RemoveCdDrive (VirtualCdDrive drive) {
+            if (cds.Contains (drive)) {
+                cds.Remove (drive);
+
+                RemoveDiskValues (drive);
+
+                VirtualCdDriveHandler handler = CdDriveRemoved;
+                if (handler != null) {
+                    handler (this, new VirtualCdDriveArgs (drive));
+                }
+            }
+        }
+
+        public void AddEthernetDevice (VirtualEthernet eth) {
+            ethernetDevices.Add (eth);
+
+            VirtualEthernetHandler handler = EthernetDeviceAdded;
+            if (handler != null) {
+                handler (this, new VirtualEthernetArgs (eth));
+            }
+        }
+
+        public void RemoveEthernetDevice (VirtualEthernet eth) {
+            int index = ethernetDevices.IndexOf (eth);
+            
+            if (index >= 0) {
+                string basekey = String.Format ("ethernet{0}", index);
+                                
+                ethernetDevices.Remove (eth);
+
                 foreach (string key in new List<string> (dict.Keys)) {
                     if (key.StartsWith (basekey)) {
                         dict.Remove (key);
                     }
+                }
+                
+                VirtualEthernetHandler handler = EthernetDeviceRemoved;
+                if (handler != null) {
+                    handler (this, new VirtualEthernetArgs (eth));
                 }
             }
         }
@@ -280,7 +238,8 @@ namespace VmxManager {
 
         private void LoadFromStream (Stream stream) {
             dict.Clear ();
-            disks.Clear ();
+            hardDisks.Clear ();
+            cds.Clear ();
             
             using (StreamReader reader = new StreamReader (stream)) {
                 string line;
@@ -302,6 +261,7 @@ namespace VmxManager {
 
             LoadDisks (DiskBusType.Ide);
             LoadDisks (DiskBusType.Scsi);
+            LoadEthernetDevices ();
         }
 
         private void LoadDisks (DiskBusType busType) {
@@ -315,51 +275,69 @@ namespace VmxManager {
                         if (diskFile != null && diskFile != "auto detect" && !Path.IsPathRooted (diskFile)) {
                             diskFile = Path.GetFullPath (diskFile);
                         }
-                        
-                        VirtualDisk disk = new VirtualDisk (diskFile,
-                                                            ParseDiskType (this[basekey + "deviceType"]),
-                                                            i, j, busType);
-                        disks.Add (disk);
+
+                        string devtype = this[basekey + "deviceType"];
+                        if (devtype == null || devtype == "disk") {
+                            VirtualHardDisk disk = new VirtualHardDisk (diskFile,
+                                                                        i, j, busType);
+                            hardDisks.Add (disk);
+                        } else {
+                            VirtualCdDrive drive = new VirtualCdDrive (diskFile, i, j, busType,
+                                                                       ParseCdType (devtype));
+                            cds.Add (drive);
+                        }
                     }
                 }
             }
         }
 
-        private DiskDeviceType ParseDiskType (string val) {
-            switch (val) {
-            case null:
-            case "disk":
-                return DiskDeviceType.HardDisk;
-            case "cdrom-raw":
-                return DiskDeviceType.CDRaw;
-            case "cdrom-image":
-                return DiskDeviceType.CDIso;
-            case "atapi-cdrom":
-                return DiskDeviceType.CDLegacy;
-            default:
-                Console.Error.WriteLine ("WARNING: Unknown disk type '{0}'", val);
-                return DiskDeviceType.HardDisk;
+        private void LoadEthernetDevices () {
+            for (int i = 0; i < 10; i++) {
+                string basekey = String.Format ("ethernet{0}.", i);
+
+                if (this[basekey + "present"] != null) {
+                    string connType = this[basekey + "connectionType"];
+                    string address = this[basekey + "address"];
+                    string dev = this[basekey + "virtualDev"];
+
+                    VirtualEthernet eth = new VirtualEthernet (Utility.ParseNetworkType (connType),
+                                                               address,
+                                                               OperatingSystem.SuggestedEthernetDeviceType);
+                    ethernetDevices.Add (eth);
+                }
             }
         }
 
-        private string DiskTypeToString (DiskDeviceType dtype) {
-            switch (dtype) {
-            case DiskDeviceType.HardDisk:
-                return "disk";
-            case DiskDeviceType.CDRaw:
+        private CdDeviceType ParseCdType (string val) {
+            switch (val) {
+            case "cdrom-raw":
+                return CdDeviceType.Raw;
+            case "cdrom-image":
+                return CdDeviceType.Iso;
+            case "atapi-cdrom":
+                return CdDeviceType.Legacy;
+            default:
+                Console.Error.WriteLine ("WARNING: Unknown disk type '{0}'", val);
+                return CdDeviceType.Raw;
+            }
+        }
+
+        private string CdTypeToString (CdDeviceType cdType) {
+            switch (cdType) {
+            case CdDeviceType.Raw:
                 return "cdrom-raw";
-            case DiskDeviceType.CDIso:
+            case CdDeviceType.Iso:
                 return "cdrom-image";
-            case DiskDeviceType.CDLegacy:
+            case CdDeviceType.Legacy:
                 return "atapi-cdrom";
             default:
-                Console.WriteLine ("WARNING: Unknown disk type '{0}'", dtype);
-                return "disk";
+                Console.WriteLine ("WARNING: Unknown disk type '{0}'", cdType);
+                return "cdrom-raw";
             }
         }
 
         public void Save () {
-            foreach (VirtualDisk disk in disks) {
+            foreach (VirtualDisk disk in hardDisks) {
                 string diskFile = disk.FileName;
                 if (diskFile != null && diskFile != "auto detect" && Path.IsPathRooted (diskFile) &&
                     Path.GetDirectoryName (diskFile) == Path.GetDirectoryName (file)) {
@@ -369,7 +347,7 @@ namespace VmxManager {
                 string basekey = GetDiskBaseKey (disk);
                 dict[basekey + "present"] = "TRUE";
                 dict[basekey + "fileName"] = diskFile;
-                dict[basekey + "deviceType"] = DiskTypeToString (disk.DiskType);
+                dict[basekey + "deviceType"] = "disk";
             }
             
             using (StreamWriter writer = new StreamWriter (File.Open (file, FileMode.Create))) {
@@ -395,9 +373,9 @@ namespace VmxManager {
             Console.WriteLine ("Operating System: " + OperatingSystem.DisplayName);
             Console.WriteLine ();
 
-            foreach (VirtualDisk disk in disks) {
-                Console.WriteLine ("Disk {0} {1}:{2} ({3}) {4}", disk.BusType, disk.BusNumber, disk.DeviceNumber,
-                                   disk.DeviceType, disk.FileName);
+            foreach (VirtualHardDisk hd in hardDisks) {
+                Console.WriteLine ("Disk {0} {1}:{2} ({3}) {4}", hd.BusType, hd.BusNumber, hd.DeviceNumber,
+                                   hd.DeviceType, hd.FileName);
             }
         }
 

@@ -42,6 +42,15 @@ namespace VmxManager {
             */
         }
 
+        public IVirtualDevice GetSelectedDevice () {
+            if (Selection.CountSelectedRows () == 0)
+                return null;
+
+            TreeIter iter;
+            Model.GetIter (out iter, Selection.GetSelectedRows ()[0]);
+            return (IVirtualDevice) Model.GetValue (iter, 0);
+        }
+
         private void OnTextCellLayout (CellLayout layout, CellRenderer cell,
                                        TreeModel model, TreeIter iter) {
 
@@ -58,8 +67,6 @@ namespace VmxManager {
 
             IVirtualDevice device = (IVirtualDevice) model.GetValue (iter, 0);
 
-            Gdk.Pixbuf pixbuf;
-            
             switch (device.DeviceType) {
             case VirtualDeviceType.HardDisk:
                 pixbufCell.Pixbuf = hdPixbuf;
@@ -79,15 +86,12 @@ namespace VmxManager {
             }
         }
 
-        /*
         protected override bool OnKeyPressEvent (Gdk.EventKey key) {
             if (key.Key == Gdk.Key.Delete) {
-                controller.OnRemove (this, new EventArgs ());
                 return true;
             } else {
                 return base.OnKeyPressEvent (key);
             }
         }
-        */
     }
 }

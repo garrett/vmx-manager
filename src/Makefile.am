@@ -11,12 +11,17 @@ VMXMAN_SOURCE =				\
 	DeviceModel.cs			\
 	DeviceView.cs			\
 	EntryPoint.cs			\
+	Enums.cs			\
 	GuestOperatingSystem.cs		\
 	IconThemeUtils.cs		\
 	MainController.cs		\
 	MainWindow.cs			\
 	OSModel.cs			\
 	Utility.cs			\
+	VirtualCdDrive.cs		\
+	VirtualDisk.cs			\
+	VirtualEthernet.cs		\
+	VirtualHardDisk.cs		\
 	VirtualMachine.cs		\
 	VirtualMachineManager.cs	\
 	VMModel.cs			\

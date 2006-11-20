@@ -29,6 +29,19 @@ namespace VmxManager {
                 return EthernetDeviceType.PCnet;
             }
         }
+
+        public static NetworkType ParseNetworkType (string netType) {
+            switch (netType) {
+            case "bridged":
+                return NetworkType.Bridged;
+            case "hostonly":
+                return NetworkType.HostOnly;
+            case "nat":
+                return NetworkType.Nat;
+            default:
+                return NetworkType.Bridged;
+            }
+        }
     }
 
 }

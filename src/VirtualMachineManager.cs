@@ -97,7 +97,7 @@ namespace VmxManager {
             }
 
             VirtualMachine machine = CreateMachine (name);
-            machine.AddDisk (new VirtualDisk (iso, DiskDeviceType.CDIso, 1, 0, DiskBusType.Ide));
+            machine.AddCdDrive (new VirtualCdDrive (iso, 1, 0, DiskBusType.Ide, CdDeviceType.Iso));
             machine.Save ();
             
             return machine;

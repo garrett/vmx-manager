@@ -14,6 +14,7 @@ namespace VmxManager {
             }
 
             VirtualMachineManager manager = new VirtualMachineManager ();
+            VirtualMachine machine;
 
             switch (args[0]) {
             case "--create-from-iso":
@@ -30,7 +31,7 @@ namespace VmxManager {
                     return 1;
                 }
                 
-                VirtualMachine machine = CreateFromIso (manager, args);
+                machine = CreateFromIso (manager, args);
                 machine.Start ();
                 break;
             case "--create-blank":
@@ -45,36 +46,6 @@ namespace VmxManager {
                 Usage ();
                 break;
             }
-                
-            /*
-            GuestOperatingSystem.Lookup ("suse");
-            
-            VirtualMachine mach = new VirtualMachine (args[0]);
-            mach.Dump ();
-            mach.Save ();
-            */
-
-            /*
-            VirtualMachine machine = VirtualMachine.Create ("testing/Foo.vmx", "FooBar");
-            machine.AddDisk (VirtualDisk.Create ("testing/Foo1.vmdk", 1024 * 2000));
-
-            VirtualDisk secondary = VirtualDisk.Create ("testing/Foo2.vmdk", 1024 * 500);
-            secondary.IsMaster = false;
-            machine.AddDisk (secondary);
-            
-            machine.AddDisk (new VirtualDisk ("testing/current.iso", VirtualDiskType.CDIso, 1, true));
-            machine.Dump ();
-            machine.Save ();
-            */
-
-            /*
-            Application.Init ();
-            
-            ShellWindow win = new ShellWindow ();
-            win.ShowAll ();
-
-            Application.Run ();
-            */
 
             return 0;
         }
