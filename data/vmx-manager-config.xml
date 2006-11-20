@@ -1,0 +1,8 @@
+<ui>
+  <popup name="AddDevicePopup">
+    <menuitem action="AddHardDisk" />
+    <menuitem action="AddCdDrive" />
+    <menuitem action="AddEthernet" />
+    <menuitem action="AddFloppy" />
+  </popup>
+</ui>

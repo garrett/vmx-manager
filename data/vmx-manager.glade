@@ -1037,7 +1037,7 @@ You can add or create some using the buttons on the left side of this window.&lt
 			      <child>
 				<widget class="GtkArrow" id="arrow1">
 				  <property name="visible">True</property>
-				  <property name="arrow_type">GTK_ARROW_DOWN</property>
+				  <property name="arrow_type">GTK_ARROW_RIGHT</property>
 				  <property name="shadow_type">GTK_SHADOW_NONE</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
@@ -1238,45 +1238,6 @@ You can add or create some using the buttons on the left side of this window.&lt
 	  <property name="fill">True</property>
 	</packing>
       </child>
-    </widget>
-  </child>
-</widget>
-
-<widget class="GtkMenu" id="addDevicePopup">
-
-  <child>
-    <widget class="GtkMenuItem" id="hard_disk1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Hard Disk</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="OnAddHardDisk" last_modification_time="Sat, 18 Nov 2006 21:30:32 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="cd-rom1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">CD-ROM</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="OnAddCd" last_modification_time="Sat, 18 Nov 2006 21:30:32 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="ethernet1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Ethernet</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="OnAddEthernet" last_modification_time="Sat, 18 Nov 2006 21:30:32 GMT"/>
-    </widget>
-  </child>
-
-  <child>
-    <widget class="GtkMenuItem" id="floppy1">
-      <property name="visible">True</property>
-      <property name="label" translatable="yes">Floppy</property>
-      <property name="use_underline">True</property>
-      <signal name="activate" handler="OnAddFloppy" last_modification_time="Sat, 18 Nov 2006 21:30:32 GMT"/>
     </widget>
   </child>
 </widget>

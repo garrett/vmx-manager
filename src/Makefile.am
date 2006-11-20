@@ -27,7 +27,12 @@ VMXMAN_SOURCE =				\
 	VMModel.cs			\
 	VMView.cs
 
-VMXMAN_RESOURCES = defaults.vmx operating-systems.csv vmx-manager.glade vmx-manager.xml
+VMXMAN_RESOURCES =		\
+	defaults.vmx		\
+	operating-systems.csv	\
+	vmx-manager.glade	\
+	vmx-manager.xml		\
+	vmx-manager-config.xml
 
 VMXMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMXMAN_RESOURCES), $(top_srcdir)/data/$(resource))
 

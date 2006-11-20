@@ -1,5 +1,6 @@
 using System;
 using Gtk;
+using Mono.Unix;
 
 namespace VmxManager {
 
@@ -8,6 +9,9 @@ namespace VmxManager {
         private VirtualMachine machine;
         private DeviceView devview;
         private DeviceModel devmodel;
+
+        private ActionGroup actions;
+        private UIManager ui;
 
         [Glade.Widget]
         private Widget configDialogContent;
@@ -28,9 +32,6 @@ namespace VmxManager {
         private Container deviceContent;
 
         [Glade.Widget]
-        private Menu addDevicePopup;
-
-        [Glade.Widget]
         private ToggleButton addDeviceButton;
 
         [Glade.Widget]
@@ -45,10 +46,34 @@ namespace VmxManager {
 
             this.machine = machine;
 
-            Glade.XML xml = new Glade.XML ("vmx-manager.glade", "configDialogContent");
-            xml.Autoconnect (this);
+            ActionEntry[] actionList = {
+                new ActionEntry ("AddHardDisk", null,
+                                 Catalog.GetString ("Hard Disk"), null,
+                                 Catalog.GetString ("Add a hard disk"),
+                                 OnAddHardDisk),
+                new ActionEntry ("AddCdDrive", null,
+                                 Catalog.GetString ("CD-ROM"), null,
+                                 Catalog.GetString ("Add a CD-ROM drive"),
+                                 OnAddCdDrive),
+                new ActionEntry ("AddEthernet", null,
+                                 Catalog.GetString ("Ethernet"), null,
+                                 Catalog.GetString ("Add an ethernet device"),
+                                 OnAddEthernet),
+                new ActionEntry ("AddFloppy", null,
+                                 Catalog.GetString ("Floppy"), null,
+                                 Catalog.GetString ("Add a floppy drive"),
+                                 OnAddFloppy),
 
-            xml = new Glade.XML ("vmx-manager.glade", "addDevicePopup");
+            };
+
+            actions = new ActionGroup ("VmxManager Device Actions");
+            actions.Add (actionList);
+
+            ui = new UIManager ();
+            ui.InsertActionGroup (actions, 0);
+            ui.AddUiFromResource ("vmx-manager-config.xml");
+
+            Glade.XML xml = new Glade.XML ("vmx-manager.glade", "configDialogContent");
             xml.Autoconnect (this);
 
             guestOsCombo.Model = new OSModel ();
@@ -66,12 +91,13 @@ namespace VmxManager {
 
             addDeviceButton.Toggled += delegate {
                 if (addDeviceButton.Active) {
-                    addDevicePopup.Popup ();
-                }
-            };
+                    Menu popup = (Menu) ui.GetWidget ("/ui/AddDevicePopup");
+                    popup.Unmapped += delegate {
+                        addDeviceButton.Active = false;
+                    };
 
-            addDevicePopup.Unmapped += delegate {
-                addDeviceButton.Active = false;
+                    popup.Popup (null, null, OnPopupPosition, 0, Gtk.Global.CurrentEventTime);
+                }
             };
 
             removeDeviceButton.Clicked += OnRemoveDevice;
@@ -81,6 +107,14 @@ namespace VmxManager {
             DefaultHeight = 400;
 
             Load ();
+        }
+
+        private void OnPopupPosition (Menu menu, out int x, out int y, out bool push_in) {
+            addDeviceButton.GdkWindow.GetOrigin (out x, out y);
+
+            x += addDeviceButton.Allocation.X + addDeviceButton.Allocation.Width;
+            y += addDeviceButton.Allocation.Y;
+            push_in = true;
         }
 
         private void SetOsCombo () {
@@ -131,7 +165,7 @@ namespace VmxManager {
             Console.WriteLine ("Adding hard disk");
         }
 
-        private void OnAddCd (object o, EventArgs args) {
+        private void OnAddCdDrive (object o, EventArgs args) {
             Console.WriteLine ("Adding cd rom");
         }
 
