@@ -29,11 +29,17 @@ namespace VmxManager {
 
         private void AddMachine (VirtualMachine machine) {
             AppendValues (machine);
+
+            machine.Started += OnMachineChanged;
+            machine.Stopped += OnMachineChanged;
         }
 
         private void RemoveMachine (VirtualMachine machine) {
             TreeIter iter;
             if (FindMachine (machine, out iter)) {
+                machine.Started -= OnMachineChanged;
+                machine.Stopped -= OnMachineChanged;
+                
                 Remove (ref iter);
             }
         }
@@ -50,6 +56,13 @@ namespace VmxManager {
 
             iter = TreeIter.Zero;
             return false;
+        }
+
+        private void OnMachineChanged (object o, EventArgs args) {
+            TreeIter iter;
+            if (FindMachine (o as VirtualMachine, out iter)) {
+                EmitRowChanged (GetPath (iter), iter);
+            }
         }
     }
 }

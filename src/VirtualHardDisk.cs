@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace VmxManager {
@@ -20,12 +21,23 @@ namespace VmxManager {
     
     public class VirtualHardDisk : VirtualDisk {
 
+        private string adapter;
+        private int sectors;
+        private int heads;
+        private int cylinders;
+
+        public long Capacity {
+            get {
+                return (long) sectors * (long) heads * (long) cylinders * (long) 512;
+            }
+        }
+
         public override VirtualDeviceType DeviceType {
             get { return VirtualDeviceType.HardDisk; }
         }
 
         public override string DisplayName {
-            get { return "Hard Disk"; }
+            get { return String.Format ("Hard Disk ({0})", Utility.FormatBytes (Capacity)); }
         }
 
         public VirtualHardDisk (string file, ushort busnum, ushort devnum, DiskBusType busType) {
@@ -33,6 +45,36 @@ namespace VmxManager {
             this.busnum = busnum;
             this.devnum = devnum;
             this.busType = busType;
+
+            ReadDescriptor ();
+        }
+
+        private void ReadDescriptor () {
+            using (StreamReader reader = new StreamReader (File.OpenRead (file))) {
+                ReadDescriptor (reader);
+            }
+        }
+
+        private void ReadDescriptor (StreamReader reader) {
+            string line;
+            while ((line = reader.ReadLine ()) != null && reader.BaseStream.Position < 2048) {
+                string key, value;
+                if (Utility.ReadConfigLine (line, out key, out value)) {
+                    switch (key) {
+                    case "ddb.geometry.sectors":
+                        sectors = Int32.Parse (value);
+                        break;
+                    case "ddb.geometry.heads":
+                        heads = Int32.Parse (value);
+                        break;
+                    case "ddb.geometry.cylinders":
+                        cylinders = Int32.Parse (value);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
         }
 
         public static VirtualHardDisk Create (string file, long sizeInMb, HardDiskType type) {

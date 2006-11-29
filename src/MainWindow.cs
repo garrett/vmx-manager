@@ -82,7 +82,7 @@ namespace VmxManager {
                                  Catalog.GetString ("Start the virtual machine"),
                                  controller.OnStart),
                 new ActionEntry ("Configure", Stock.Properties,
-                                 Catalog.GetString ("Configure Devices..."), "<control>p",
+                                 Catalog.GetString ("Configure..."), "<control>p",
                                  Catalog.GetString ("Configure the connected devices"),
                                  controller.OnConfigure),
                 new ActionEntry ("Remove", Stock.Remove,
@@ -135,6 +135,22 @@ namespace VmxManager {
             vmview.Model.RowDeleted += delegate {
                 SetActionsSensitive ();
             };
+
+            foreach (VirtualMachine machine in manager.Machines) {
+                machine.Started += OnMachineChanged;
+                machine.Stopped += OnMachineChanged;
+            }
+            
+            manager.Added += delegate (object o, VirtualMachineArgs args) {
+                args.Machine.Started += OnMachineChanged;
+                args.Machine.Stopped += OnMachineChanged;
+            };
+        }
+
+        private void OnMachineChanged (object o, EventArgs args) {
+            Application.Invoke (delegate {
+                SetActionsSensitive ();
+            });
         }
 
         protected override void OnRealized () {
@@ -177,8 +193,8 @@ namespace VmxManager {
         private void SetActionsSensitive () {
             bool machineSelected = vmview.Selection.CountSelectedRows () > 0;
 
-            removeButton.Sensitive = configureButton.Sensitive = machineSelected;
-            startButton.Sensitive = actions.GetAction ("Start").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+            removeButton.Sensitive = machineSelected;
+            startButton.Sensitive = configureButton.Sensitive = actions.GetAction ("Start").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
 
             int count = manager.Machines.Count;
             if (count > 0 && placeholder.Parent != null) {

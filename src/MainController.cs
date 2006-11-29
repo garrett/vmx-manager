@@ -68,7 +68,15 @@ namespace VmxManager {
                 }
 
                 if (manager.GetMachine (name) == null) {
-                    manager.CreateMachine (name);
+                    VirtualMachine machine = manager.CreateMachine (name);
+                    ConfigDialog dialog = new ConfigDialog (machine, window);
+                    dialog.Show ();
+                    dialog.Response += delegate (object d, ResponseArgs respargs) {
+                        if (respargs.ResponseId == ResponseType.Cancel) {
+                            manager.RemoveMachine (machine);
+                        }
+                    };
+                    
                     break;
                 }
             }

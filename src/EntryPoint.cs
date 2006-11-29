@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Mono.Unix;
 using Gtk;
 
 namespace VmxManager {
@@ -78,7 +79,15 @@ namespace VmxManager {
             win.DeleteEvent += delegate {
                 Application.Quit ();
             };
-            Application.Run ();
+
+            try {
+                Application.Run ();
+            } catch (Exception e) {
+                Console.Error.WriteLine (e);
+                Utility.ShowError (win,
+                                   Catalog.GetString ("An unexpected error occurred, Virtual Machine Manager will now exit:"),
+                                   e.Message);
+            }
         }
     }
 }

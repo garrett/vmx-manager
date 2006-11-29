@@ -11,7 +11,7 @@ namespace VmxManager {
                                                                         "vmware");
 
         private List<VirtualMachine> machines = new List<VirtualMachine> ();
-        private string configFile = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData) + "/vmman/machines";
+        private string configFile = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData) + "/vmx-manager/machines";
 
         public event VirtualMachineHandler Added;
         public event VirtualMachineHandler Removed;
@@ -32,7 +32,11 @@ namespace VmxManager {
             using (StreamReader reader = new StreamReader (File.OpenRead (configFile))) {
                 string line;
                 while ((line = reader.ReadLine ()) != null) {
-                    machines.Add (new VirtualMachine (line));
+                    try {
+                        machines.Add (new VirtualMachine (line));
+                    } catch (Exception e) {
+                        Console.Error.WriteLine ("Failed to load virtual machine '{0}': {1}", line, e);
+                    }
                 }
             }
         }
@@ -79,14 +83,9 @@ namespace VmxManager {
         public VirtualMachine CreateMachine (string name) {
 
             string vmfile = String.Format ("{0}/{1}/{2}", MachineDirectory, name, name + ".vmx");
-            string vmdir = Path.GetDirectoryName (vmfile);
-            if (!Directory.Exists (vmdir)) {
-                Directory.CreateDirectory (vmdir);
-            }
             
             VirtualMachine machine = VirtualMachine.Create (vmfile, name);
             AddMachine (machine);
-            machine.Save ();
             
             return machine;
         }

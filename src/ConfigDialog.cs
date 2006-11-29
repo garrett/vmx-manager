@@ -29,6 +29,9 @@ namespace VmxManager {
         private CheckButton soundToggle;
 
         [Glade.Widget]
+        private CheckButton usbToggle;
+
+        [Glade.Widget]
         private Container deviceContent;
 
         [Glade.Widget]
@@ -135,6 +138,7 @@ namespace VmxManager {
             nameEntry.Text = machine.Name;
             memorySpin.Value = machine.MemorySize;
             soundToggle.Active = machine.SoundEnabled;
+            usbToggle.Active = machine.UsbEnabled;
 
             SetOsCombo ();
         }
@@ -143,6 +147,7 @@ namespace VmxManager {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
             machine.SoundEnabled = soundToggle.Active;
+            machine.UsbEnabled = usbToggle.Active;
 
             TreeIter iter;
             if (guestOsCombo.GetActiveIter (out iter)) {

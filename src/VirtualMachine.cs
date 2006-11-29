@@ -32,10 +32,11 @@ namespace VmxManager {
 
         private string file;
         private Dictionary<string, string> dict = new Dictionary<string, string> ();
+        private bool running;
+        private FileSystemWatcher watcher;
         
         private List<VirtualHardDisk> hardDisks = new List<VirtualHardDisk> ();
         private List<VirtualCdDrive> cds = new List<VirtualCdDrive> ();
-
         private List<VirtualEthernet> ethernetDevices = new List<VirtualEthernet> ();
 
         public event VirtualHardDiskHandler HardDiskAdded;
@@ -45,10 +46,14 @@ namespace VmxManager {
         public event VirtualEthernetHandler EthernetDeviceAdded;
         public event VirtualEthernetHandler EthernetDeviceRemoved;
 
+        public event EventHandler Started;
+        public event EventHandler Stopped;
+
         public string FileName {
             get { return file; }
             set {
                 file = Path.GetFullPath (value);
+                CreateWatcher ();
             }
         }
 
@@ -83,6 +88,11 @@ namespace VmxManager {
             set { dict["sound.present"] = value ? "TRUE" : "FALSE"; }
         }
 
+        public bool UsbEnabled {
+            get { return dict.ContainsKey ("usb.present") && dict["usb.present"] == "TRUE"; }
+            set { dict["usb.present"] = value ? "TRUE" : "FALSE"; }
+        }
+
         public ReadOnlyCollection<VirtualHardDisk> HardDisks {
             get { return new ReadOnlyCollection<VirtualHardDisk> (hardDisks); }
         }
@@ -96,7 +106,7 @@ namespace VmxManager {
         }
 
         public bool IsRunning {
-            get { return File.Exists (file + ".WRITELOCK"); }
+            get { return running; }
         }
 
         public string this[string key] {
@@ -117,6 +127,7 @@ namespace VmxManager {
         public VirtualMachine (string file) {
             this.FileName = file;
             LoadFromFile ();
+            CheckRunning ();
         }
 
         public static VirtualMachine Create (string file, string name) {
@@ -230,9 +241,6 @@ namespace VmxManager {
         }
 
         private void LoadFromFile () {
-            if (!File.Exists (file))
-                return;
-
             LoadFromStream (File.OpenRead (file));
         }
 
@@ -245,17 +253,10 @@ namespace VmxManager {
                 string line;
 
                 while ((line = reader.ReadLine ()) != null) {
-                    string[] splitLine = line.Split (new char[] { '=' }, 2);
-                    
-                    if (splitLine.Length != 2)
-                        continue;
-
-                    string key = splitLine[0].Trim ();
-
-                    string value = splitLine[1].Trim ();
-                    value = value.Substring (1, value.Length - 2);
-
-                    dict[key] = value;
+                    string key, value;
+                    if (Utility.ReadConfigLine (line, out key, out value)) {
+                        dict[key] = value;
+                    }
                 }
             }
 
@@ -273,7 +274,7 @@ namespace VmxManager {
                     if (this[basekey + "present"] != null) {
                         string diskFile = this[basekey + "fileName"];
                         if (diskFile != null && diskFile != "auto detect" && !Path.IsPathRooted (diskFile)) {
-                            diskFile = Path.GetFullPath (diskFile);
+                            diskFile = Path.Combine (Path.GetDirectoryName (file), diskFile);
                         }
 
                         string devtype = this[basekey + "deviceType"];
@@ -337,6 +338,11 @@ namespace VmxManager {
         }
 
         public void Save () {
+            string vmdir = Path.GetDirectoryName (file);
+            if (!Directory.Exists (vmdir)) {
+                Directory.CreateDirectory (vmdir);
+            }
+
             foreach (VirtualDisk disk in hardDisks) {
                 string diskFile = disk.FileName;
                 if (diskFile != null && diskFile != "auto detect" && Path.IsPathRooted (diskFile) &&
@@ -394,6 +400,46 @@ namespace VmxManager {
 
         public override int GetHashCode () {
             return this.FileName.GetHashCode ();
+        }
+
+        private void CreateWatcher () {
+            if (watcher != null) {
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose ();
+            }
+            
+            watcher = new FileSystemWatcher (Path.GetDirectoryName (file));
+            watcher.Created += OnFileCreated;
+            watcher.Deleted += OnFileDeleted;
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private void OnFileCreated (object o, FileSystemEventArgs args) {
+            if (args.FullPath == file + ".WRITELOCK") {
+                CheckRunning ();
+            }
+        }
+
+        private void OnFileDeleted (object o, FileSystemEventArgs args) {
+            if (args.FullPath == file + ".WRITELOCK") {
+                CheckRunning ();
+            }
+        }
+
+        private void CheckRunning () {
+            bool val = File.Exists (file + ".WRITELOCK");
+
+            EventHandler handler = null;
+            if (val && !running) {
+                handler = Started;
+            } else if (!val && running) {
+                handler = Stopped;
+            }
+
+            running = val;
+            if (handler != null) {
+                handler (this, new EventArgs ());
+            }
         }
     }
 }

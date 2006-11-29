@@ -1,4 +1,6 @@
 using System;
+using Mono.Unix;
+using Gtk;
 
 namespace VmxManager {
 
@@ -42,6 +44,77 @@ namespace VmxManager {
                 return NetworkType.Bridged;
             }
         }
-    }
 
+        public static bool ReadConfigLine (string line, out string key, out string value) {
+            string[] splitLine = line.Split (new char[] { '=' }, 2);
+                    
+            if (splitLine.Length != 2) {
+                key = null;
+                value = null;
+                return false;
+            }
+                
+            key = splitLine[0].Trim ();
+
+            value = splitLine[1].Trim ();
+            if (value[0] == '"') {
+                // naively strip the double quotes
+                value = value.Substring (1, value.Length - 2);
+            }
+
+            return true;
+        }
+
+        public static string FormatBytes (long val) {
+            if (val == 0)
+                return null;
+
+            int level = 1;
+            decimal dval = (decimal) val;
+
+            while (dval > 1024) {
+                dval = dval / 1024;
+                level++;
+            }
+
+            string unit;
+            
+            switch (level) {
+            case 1:
+                unit = "byte";
+                break;
+            case 2:
+                unit = "KB";
+                break;
+            case 3:
+                unit = "MB";
+                break;
+            case 4:
+                unit = "GB";
+                break;
+            case 5:
+                unit = "TB";
+                break;
+            default:
+                // riiiiiiight....
+                return null;
+            }
+
+            return Decimal.Round (dval, 1) + " " + unit;
+        }
+
+        public static void ShowError (string m1, string m2) {
+            ShowError (null, m1, m2);
+        }
+        
+        public static void ShowError (Window parent, string m1, string m2) {
+            string message = String.Format ("<b>{0}</b>\n\n{1}", GLib.Markup.EscapeText (m1), m2);
+            
+            MessageDialog dialog = new MessageDialog (parent, DialogFlags.Modal, MessageType.Error,
+                                                      ButtonsType.Close, message);
+            dialog.Title = Catalog.GetString ("Virtual Machine Manager Error");
+            dialog.Run ();
+            dialog.Destroy ();
+        }
+    }
 }
