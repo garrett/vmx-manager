@@ -13,6 +13,7 @@ VMXMAN_SOURCE =				\
 	EntryPoint.cs			\
 	Enums.cs			\
 	GuestOperatingSystem.cs		\
+	HardDiskConfigDialog.cs		\
 	IconThemeUtils.cs		\
 	MainController.cs		\
 	MainWindow.cs			\

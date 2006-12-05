@@ -48,18 +48,33 @@ namespace VmxManager {
 
         public event EventHandler Started;
         public event EventHandler Stopped;
-
+        public event EventHandler NameChanged;
+        public event EventHandler FileNameChanged;
+        
         public string FileName {
             get { return file; }
             set {
                 file = Path.GetFullPath (value);
+
+                EventHandler handler = FileNameChanged;
+                if (handler != null) {
+                    handler (this, new EventArgs ());
+                }
+                
                 CreateWatcher ();
             }
         }
 
         public string Name {
             get { return dict["displayName"]; }
-            set { dict["displayName"] = value; }
+            set {
+                dict["displayName"] = value;
+
+                EventHandler handler = NameChanged;
+                if (handler != null) {
+                    handler (this, new EventArgs ());
+                }
+            }
         }
 
         public int MemorySize {
@@ -341,6 +356,14 @@ namespace VmxManager {
             string vmdir = Path.GetDirectoryName (file);
             if (!Directory.Exists (vmdir)) {
                 Directory.CreateDirectory (vmdir);
+                CreateWatcher ();
+            }
+
+            // remove all the existing ide/scsi related values
+            foreach (string key in new List<string> (dict.Keys)) {
+                if (key.StartsWith ("ide") || key.StartsWith ("scsi")) {
+                    dict.Remove (key);
+                }
             }
 
             foreach (VirtualDisk disk in hardDisks) {
@@ -407,11 +430,15 @@ namespace VmxManager {
                 watcher.EnableRaisingEvents = false;
                 watcher.Dispose ();
             }
-            
-            watcher = new FileSystemWatcher (Path.GetDirectoryName (file));
-            watcher.Created += OnFileCreated;
-            watcher.Deleted += OnFileDeleted;
-            watcher.EnableRaisingEvents = true;
+
+            string dir = Path.GetDirectoryName (file);
+
+            if (Directory.Exists (dir)) {
+                watcher = new FileSystemWatcher (Path.GetDirectoryName (file));
+                watcher.Created += OnFileCreated;
+                watcher.Deleted += OnFileDeleted;
+                watcher.EnableRaisingEvents = true;
+            }
         }
 
         private void OnFileCreated (object o, FileSystemEventArgs args) {

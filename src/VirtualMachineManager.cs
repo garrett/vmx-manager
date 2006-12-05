@@ -62,11 +62,29 @@ namespace VmxManager {
             }
             
             machines.Add (machine);
+            machine.NameChanged += OnMachineNameChanged;
+            machine.FileNameChanged += delegate {
+                SaveMachines ();
+            };
+            
             SaveMachines ();
 
             VirtualMachineHandler handler = Added;
             if (handler != null) {
                 handler (this, new VirtualMachineArgs (machine));
+            }
+        }
+
+        private string CreateMachinePath (string name) {
+            return String.Format ("{0}/{1}/{2}", MachineDirectory, name, name + ".vmx");
+        }
+
+        private void OnMachineNameChanged (object o, EventArgs args) {
+            VirtualMachine machine = o as VirtualMachine;
+
+            if (!File.Exists (machine.FileName)) {
+                // machine has not been saved for the first time yet, we'll fix up the path
+                machine.FileName = CreateMachinePath (machine.Name);
             }
         }
 
@@ -82,9 +100,7 @@ namespace VmxManager {
 
         public VirtualMachine CreateMachine (string name) {
 
-            string vmfile = String.Format ("{0}/{1}/{2}", MachineDirectory, name, name + ".vmx");
-            
-            VirtualMachine machine = VirtualMachine.Create (vmfile, name);
+            VirtualMachine machine = VirtualMachine.Create (CreateMachinePath (name), name);
             AddMachine (machine);
             
             return machine;

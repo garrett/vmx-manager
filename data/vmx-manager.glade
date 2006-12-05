@@ -1427,7 +1427,7 @@ You can add or create some using the buttons on the left side of this window.&lt
 	      <property name="spacing">0</property>
 
 	      <child>
-		<widget class="GtkComboBox" id="combobox1">
+		<widget class="GtkComboBox" id="busTypeCombo">
 		  <property name="visible">True</property>
 		  <property name="items" translatable="yes">IDE
 SCSI</property>
@@ -1510,7 +1510,7 @@ SCSI</property>
 	      <property name="spacing">6</property>
 
 	      <child>
-		<widget class="GtkSpinButton" id="spinbutton2">
+		<widget class="GtkSpinButton" id="diskSizeSpin">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="climb_rate">1</property>
@@ -1570,7 +1570,7 @@ SCSI</property>
 	      <property name="spacing">6</property>
 
 	      <child>
-		<widget class="GtkComboBox" id="combobox2">
+		<widget class="GtkComboBox" id="busNumberCombo">
 		  <property name="visible">True</property>
 		  <property name="items" translatable="yes">0
 1</property>
@@ -1585,7 +1585,7 @@ SCSI</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkComboBox" id="combobox4">
+		<widget class="GtkComboBox" id="deviceNumberCombo">
 		  <property name="visible">True</property>
 		  <property name="items" translatable="yes">0
 1

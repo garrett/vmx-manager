@@ -25,10 +25,17 @@ namespace VmxManager {
         private int sectors;
         private int heads;
         private int cylinders;
+        private long capacity;
 
         public long Capacity {
             get {
-                return (long) sectors * (long) heads * (long) cylinders * (long) 512;
+                if (capacity > 0) {
+                    return capacity;
+                } else {
+                    return (long) sectors * (long) heads * (long) cylinders * (long) 512;
+                }
+            } set {
+                capacity = value;
             }
         }
 
@@ -49,13 +56,31 @@ namespace VmxManager {
             ReadDescriptor ();
         }
 
+        public VirtualHardDisk (ushort busnum, ushort devnum, DiskBusType busType, long capacity) {
+            this.busnum = busnum;
+            this.devnum = devnum;
+            this.busType = busType;
+            this.capacity = capacity;
+        }
+
         private void ReadDescriptor () {
+            if (!File.Exists (file))
+                return;
+            
             using (StreamReader reader = new StreamReader (File.OpenRead (file))) {
                 ReadDescriptor (reader);
             }
         }
 
         private void ReadDescriptor (StreamReader reader) {
+
+            char[] buf = new char[4];
+            reader.Read (buf, 0, 4);
+            if (new String (buf) == "KDMV") {
+                //the descriptor is in the 2nd sector, seek there
+                reader.BaseStream.Seek (512, SeekOrigin.Begin);
+            }
+            
             string line;
             while ((line = reader.ReadLine ()) != null && reader.BaseStream.Position < 2048) {
                 string key, value;
@@ -77,14 +102,24 @@ namespace VmxManager {
             }
         }
 
-        public static VirtualHardDisk Create (string file, long sizeInMb, HardDiskType type) {
-            Process proc = Process.Start (String.Format ("qemu-img create -f vmdk \"{0}\" \"{1}\"",
-                                                         file, sizeInMb * 1024));
+        private static void CreateDiskFile (string file, long sizeInMb, HardDiskType type) {
+            // FIXME: use vmware-vdiskmanager if available
+            // FIXME: throw something if we can't create the requested HardDiskType?
+            
+            Process proc = Process.Start ("/usr/bin/qemu-img", String.Format ("create -f vmdk \"{0}\" \"{1}\"",
+                                                                              file, sizeInMb * 1024));
             proc.WaitForExit ();
             if (proc.ExitCode != 0) {
                 throw new ApplicationException ("Failed to create virtual disk");
             }
-            
+        }
+
+        public void Create (HardDiskType type) {
+            CreateDiskFile (FileName, Capacity / 1024 / 1024, type);
+        }
+
+        public static VirtualHardDisk Create (string file, long sizeInMb, HardDiskType type) {
+            CreateDiskFile (file, sizeInMb, type);
             return new VirtualHardDisk (file, 0, 0, DiskBusType.Ide);
         }
     }

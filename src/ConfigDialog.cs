@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Gtk;
 using Mono.Unix;
 
@@ -143,6 +144,15 @@ namespace VmxManager {
             SetOsCombo ();
         }
 
+        private string GetNewDiskPath (string dir) {
+            for (int i = 0;; i++) {
+                string path = System.IO.Path.Combine (dir, String.Format ("disk{0}.vmdk", i));
+                if (!File.Exists (path)) {
+                    return path;
+                }
+            }
+        }
+
         private void Save () {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
@@ -154,7 +164,19 @@ namespace VmxManager {
                 GuestOperatingSystem os = (GuestOperatingSystem) guestOsCombo.Model.GetValue (iter, 1);
                 machine.OperatingSystem = os;
             }
-            
+
+            string vmdir = System.IO.Path.GetDirectoryName (machine.FileName);
+            if (!Directory.Exists (vmdir)) {
+                Directory.CreateDirectory (vmdir);
+            }
+
+            foreach (VirtualHardDisk hd in machine.HardDisks) {
+                if (hd.FileName == null) {
+                    hd.FileName = GetNewDiskPath (vmdir);
+                    hd.Create (HardDiskType.SingleSparse);
+                }
+            }
+
             machine.Save ();
         }
 
@@ -167,7 +189,16 @@ namespace VmxManager {
         }
 
         private void OnAddHardDisk (object o, EventArgs args) {
-            Console.WriteLine ("Adding hard disk");
+            VirtualHardDisk disk = new VirtualHardDisk (0, 0, DiskBusType.Ide, (long) 6 * 1024 * 1024 * 1024);
+
+            HardDiskConfigDialog dialog = new HardDiskConfigDialog (disk, true, this);
+            dialog.Response += delegate (object b, ResponseArgs rargs) {
+                if (rargs.ResponseId == ResponseType.Ok) {
+                    machine.AddHardDisk (disk);
+                }
+            };
+
+            dialog.Show ();
         }
 
         private void OnAddCdDrive (object o, EventArgs args) {
@@ -189,6 +220,7 @@ namespace VmxManager {
                 machine.RemoveHardDisk ((VirtualHardDisk) device);
                 break;
             case VirtualDeviceType.CdRom:
+                machine.RemoveCdDrive ((VirtualCdDrive) device);
                 break;
             case VirtualDeviceType.Ethernet:
                 machine.RemoveEthernetDevice ((VirtualEthernet) device);
@@ -199,6 +231,21 @@ namespace VmxManager {
         }
 
         private void OnConfigureDevice (object o, EventArgs args) {
+            IVirtualDevice dev = devview.GetSelectedDevice ();
+
+            Dialog dialog = null;
+            
+            switch (dev.DeviceType) {
+            case VirtualDeviceType.HardDisk:
+                dialog = new HardDiskConfigDialog ((VirtualHardDisk) dev, false, this);
+                break;
+            default:
+                break;
+            }
+
+            if (dialog != null) {
+                dialog.Show ();
+            }
         }
 
         private void OnDeviceSelectionChanged (object o, EventArgs args) {
