@@ -206,7 +206,16 @@ namespace VmxManager {
         }
 
         private void OnAddEthernet (object o, EventArgs args) {
-            Console.WriteLine ("Adding ethernet");
+            VirtualEthernet ethernet = new VirtualEthernet (NetworkType.Bridged, null, 
+                                                            machine.OperatingSystem.SuggestedEthernetDeviceType);
+            EthernetConfigDialog dialog = new EthernetConfigDialog (ethernet, this);
+            dialog.Response += delegate (object b, ResponseArgs rargs) {
+                if (rargs.ResponseId == ResponseType.Ok) {
+                    machine.AddEthernetDevice (ethernet);
+                }
+            };
+
+            dialog.Show ();
         }
 
         private void OnAddFloppy (object o, EventArgs args) {
@@ -239,11 +248,18 @@ namespace VmxManager {
             case VirtualDeviceType.HardDisk:
                 dialog = new HardDiskConfigDialog ((VirtualHardDisk) dev, false, this);
                 break;
+            case VirtualDeviceType.Ethernet:
+                dialog = new EthernetConfigDialog ((VirtualEthernet) dev, this);
+                break;
             default:
                 break;
             }
 
             if (dialog != null) {
+                dialog.Response += delegate {
+                    devview.QueueDraw ();
+                };
+                
                 dialog.Show ();
             }
         }

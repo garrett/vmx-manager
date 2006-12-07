@@ -32,6 +32,19 @@ namespace VmxManager {
             }
         }
 
+        public static string EthernetDeviceTypeToString (EthernetDeviceType type) {
+            switch (type) {
+            case EthernetDeviceType.PCnet:
+                return "vlance";
+            case EthernetDeviceType.VMXnet:
+                return "vmxnet";
+            case EthernetDeviceType.E1000:
+                return "e1000";
+            default:
+                return null;
+            }
+        }
+
         public static NetworkType ParseNetworkType (string netType) {
             switch (netType) {
             case "bridged":
@@ -42,6 +55,19 @@ namespace VmxManager {
                 return NetworkType.Nat;
             default:
                 return NetworkType.Bridged;
+            }
+        }
+
+        public static string NetworkTypeToString (NetworkType type) {
+            switch (type) {
+            case NetworkType.Bridged:
+                return "bridged";
+            case NetworkType.HostOnly:
+                return "hostonly";
+            case NetworkType.Nat:
+                return "nat";
+            default:
+                return null;
             }
         }
 

@@ -378,7 +378,24 @@ namespace VmxManager {
                 dict[basekey + "fileName"] = diskFile;
                 dict[basekey + "deviceType"] = "disk";
             }
-            
+
+            for (int i = 0; i < ethernetDevices.Count; i++) {
+                VirtualEthernet ethernet = ethernetDevices[i];
+
+                string basekey = String.Format ("ethernet{0}.", i);
+
+                this[basekey + "present"] = "TRUE";
+                this[basekey + "connectionType"] = Utility.NetworkTypeToString (ethernet.NetworkType);
+
+                if (ethernet.Address != null) {
+                    this[basekey + "address"] = ethernet.Address;
+                } else {
+                    dict.Remove (basekey + "address");
+                }
+                
+                this[basekey + "virtualDev"] = Utility.EthernetDeviceTypeToString (ethernet.EthernetType);
+            }
+
             using (StreamWriter writer = new StreamWriter (File.Open (file, FileMode.Create))) {
                 List<string> keys = new List<string> (dict.Keys);
                 keys.Sort ();

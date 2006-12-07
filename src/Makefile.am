@@ -12,6 +12,7 @@ VMXMAN_SOURCE =				\
 	DeviceView.cs			\
 	EntryPoint.cs			\
 	Enums.cs			\
+	EthernetConfigDialog.cs		\
 	GuestOperatingSystem.cs		\
 	HardDiskConfigDialog.cs		\
 	IconThemeUtils.cs		\

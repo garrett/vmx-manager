@@ -150,6 +150,7 @@ namespace VmxManager {
         private void OnMachineChanged (object o, EventArgs args) {
             Application.Invoke (delegate {
                 SetActionsSensitive ();
+                vmview.QueueDraw ();
             });
         }
 
