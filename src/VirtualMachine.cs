@@ -66,8 +66,13 @@ namespace VmxManager {
         }
 
         public string Name {
-            get { return dict["displayName"]; }
-            set {
+            get {
+                if (dict.ContainsKey ("displayName")) {
+                    return dict["displayName"];
+                } else {
+                    return Catalog.GetString ("Unknown");
+                }
+            } set {
                 dict["displayName"] = value;
 
                 EventHandler handler = NameChanged;
@@ -286,7 +291,7 @@ namespace VmxManager {
                     string basekey = String.Format ("{0}{1}:{2}.", busType == DiskBusType.Ide ? "ide" : "scsi",
                                                     i, j);
                     
-                    if (this[basekey + "present"] != null) {
+                    if (this[basekey + "present"] != null && this[basekey + "present"] == "TRUE") {
                         string diskFile = this[basekey + "fileName"];
                         if (diskFile != null && diskFile != "auto detect" && !Path.IsPathRooted (diskFile)) {
                             diskFile = Path.Combine (Path.GetDirectoryName (file), diskFile);

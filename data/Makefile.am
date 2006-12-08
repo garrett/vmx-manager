@@ -26,3 +26,5 @@ EXTRA_DIST =				\
 	gnome-dev-ethernet.png		\
 	gnome-dev-floppy.png		\
 	vmx-manager.svg
+
+DISTCLEANFILES = vmx-manager.desktop
