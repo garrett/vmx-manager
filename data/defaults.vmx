@@ -13,5 +13,5 @@ usb.present = "TRUE"
 sound.present = "TRUE"
 sound.virtualDev = "es1371"
 
-guestOS = "other26xlinux"
+guestOS = "suse"
 ethernet0.addressType = "generated"

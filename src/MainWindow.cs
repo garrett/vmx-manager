@@ -194,8 +194,7 @@ namespace VmxManager {
         private void SetActionsSensitive () {
             bool machineSelected = vmview.Selection.CountSelectedRows () > 0;
 
-            removeButton.Sensitive = machineSelected;
-            startButton.Sensitive = configureButton.Sensitive = actions.GetAction ("Start").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+            startButton.Sensitive = configureButton.Sensitive = removeButton.Sensitive = actions.GetAction ("Start").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
 
             int count = manager.Machines.Count;
             if (count > 0 && placeholder.Parent != null) {
