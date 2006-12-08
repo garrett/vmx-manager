@@ -40,6 +40,8 @@ namespace VmxManager {
                                                                             Stock.Ok, ResponseType.Ok) {
             this.drive = drive;
 
+            IconThemeUtils.SetWindowIcon (this);
+
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "cdConfigContent");
             xml.Autoconnect (this);
 

@@ -175,10 +175,15 @@ namespace VmxManager {
         }
 
         [DllImport ("libglib-2.0.so.0")]
-        private static extern bool g_find_program_in_path (string program);
+        private static extern IntPtr g_find_program_in_path (string program);
 
         public static bool CheckProgramAvailable (string program) {
-            return g_find_program_in_path (program);
+            IntPtr result = g_find_program_in_path (program);
+            if (result != IntPtr.Zero) {
+                Stdlib.free (result);
+            }
+
+            return result != IntPtr.Zero;
         }
 
         public static bool CheckForPlayer () {

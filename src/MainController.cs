@@ -54,8 +54,8 @@ namespace VmxManager {
 
             HigMessageDialog dialog = new HigMessageDialog (window, DialogFlags.Modal, MessageType.Question,
                                                             ButtonsType.None,
-                                                            Catalog.GetString ("Delete virtual machine files?"),
-                                                            Catalog.GetString ("Would you like to delete the virtual machine files, or keep them?  If you delete them, all data in the virtual machine will be lost."));
+                                                            Catalog.GetString ("Would you like to delete the virtual machine files, or keep them?"),
+                                                            Catalog.GetString ("If you delete them, all data in the virtual machine will be lost."));
             dialog.AddButton (Catalog.GetString ("Keep"), ResponseType.No, true);
             dialog.AddButton (Stock.Delete, ResponseType.Yes, false);
             

@@ -103,7 +103,7 @@ namespace VmxManager
 
         public static void SetWindowIcon(Gtk.Window window)
         {
-            SetWindowIcon(window, "tangerine");
+            SetWindowIcon(window, "vmx-manager");
         }
 
         public static void SetWindowIcon(Gtk.Window window, string iconName)

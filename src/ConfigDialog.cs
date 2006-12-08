@@ -50,7 +50,7 @@ namespace VmxManager {
 
             this.machine = machine;
 
-            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+            IconThemeUtils.SetWindowIcon (this);
 
             ActionEntry[] actionList = {
                 new ActionEntry ("AddHardDisk", null,
@@ -258,8 +258,8 @@ namespace VmxManager {
 
                 HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Question,
                                                                 ButtonsType.None,
-                                                                Catalog.GetString ("Delete disk files?"),
-                                                                Catalog.GetString ("Would you like to delete the files containing the disk data, or keep them?  If you delete them, all data on the disk will be lost."));
+                                                                Catalog.GetString ("Would you like to delete the disk files, or keep them?"),
+                                                                Catalog.GetString ("If you delete them, all data on the disk will be lost."));
                 dialog.AddButton (Catalog.GetString ("Keep"), ResponseType.No, true);
                 dialog.AddButton (Stock.Delete, ResponseType.Yes, false);
                 

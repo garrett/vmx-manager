@@ -58,7 +58,7 @@ namespace VmxManager {
         private static extern IntPtr shell_window_get_type ();
 
         public MainWindow () : base ("Virtual Machine Manager") {
-            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+            IconThemeUtils.SetWindowIcon (this);
             
             manager = new VirtualMachineManager ();
             controller = new MainController ();
@@ -119,7 +119,7 @@ namespace VmxManager {
                 HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Warning,
                                                                 ButtonsType.Close,
                                                                 Catalog.GetString ("VMware Player not found"),
-                                                                Catalog.GetString ("You do not appear to have VMware Player installed.  It will not be possible to run virtual machines."));
+                                                                Catalog.GetString ("It will not be possible to run virtual machines."));
                 dialog.Run ();
                 dialog.Destroy ();
             }
