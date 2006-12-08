@@ -99,11 +99,7 @@ namespace VmxManager {
         }
 
         public VirtualMachine CreateMachine (string name) {
-
-            VirtualMachine machine = VirtualMachine.Create (CreateMachinePath (name), name);
-            AddMachine (machine);
-            
-            return machine;
+            return VirtualMachine.Create (CreateMachinePath (name), name);
         }
 
         public VirtualMachine CreateMachineFromIso (string name, string iso) {

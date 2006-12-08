@@ -12,6 +12,10 @@ hicolordir = $(datadir)/icons/hicolor
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(hicolordir)/scalable/apps
 	$(INSTALL_DATA) $(srcdir)/vmx-manager.svg $(DESTDIR)$(hicolordir)/scalable/apps/vmx-manager.svg
+	$(mkinstalldirs) $(DESTDIR)$(hicolordir)/48x48/apps
+	$(INSTALL_DATA) $(srcdir)/vmx-manager-48.png $(DESTDIR)$(hicolordir)/48x48/apps/vmx-manager.png
+	$(mkinstalldirs) $(DESTDIR)$(hicolordir)/24x24/apps
+	$(INSTALL_DATA) $(srcdir)/vmx-manager-24.png $(DESTDIR)$(hicolordir)/24x24/apps/vmx-manager.png
 
 
 EXTRA_DIST =				\
@@ -25,6 +29,8 @@ EXTRA_DIST =				\
 	gnome-dev-harddisk.png		\
 	gnome-dev-ethernet.png		\
 	gnome-dev-floppy.png		\
-	vmx-manager.svg
+	vmx-manager.svg			\
+	vmx-manager-48.png		\
+	vmx-manager-24.png
 
 DISTCLEANFILES = vmx-manager.desktop

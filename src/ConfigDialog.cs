@@ -116,6 +116,8 @@ namespace VmxManager {
             VBox.Add (configDialogContent);
             DefaultHeight = 400;
 
+            Response += OnResponse;
+
             Load ();
         }
 
@@ -193,10 +195,10 @@ namespace VmxManager {
             return true;
         }
 
-        protected override void OnResponse (ResponseType response) {
+        private void OnResponse (object o, ResponseArgs args) {
             bool destroy = true;
             
-            if (response == ResponseType.Ok) {
+            if (args.ResponseId == ResponseType.Ok) {
                 destroy = Save ();
             }
 
