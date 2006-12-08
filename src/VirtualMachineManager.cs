@@ -123,5 +123,20 @@ namespace VmxManager {
 
             return null;
         }
+
+        public VirtualMachine GetMachineByFileName (string file) {
+            if (!Path.IsPathRooted (file)) {
+                // this is crack
+                file = CreateMachinePath (file);
+            }
+
+            foreach (VirtualMachine machine in machines) {
+                if (machine.FileName == file) {
+                    return machine;
+                }
+            }
+
+            return null;
+        }
     }
 }

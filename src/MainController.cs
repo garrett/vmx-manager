@@ -85,7 +85,7 @@ namespace VmxManager {
                     name = String.Format (Catalog.GetString ("New Virtual Machine #{0}"), i);
                 }
 
-                if (manager.GetMachine (name) == null) {
+                if (manager.GetMachine (name) == null && manager.GetMachineByFileName (name) == null) {
                     VirtualMachine machine = manager.CreateMachine (name);
                     ConfigDialog dialog = new ConfigDialog (machine, window);
                     dialog.Response += delegate (object d, ResponseArgs respargs) {
