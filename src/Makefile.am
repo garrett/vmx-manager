@@ -17,6 +17,7 @@ VMXMAN_SOURCE =				\
 	EthernetConfigDialog.cs		\
 	GuestOperatingSystem.cs		\
 	HardDiskConfigDialog.cs		\
+	HigMessageDialog.cs		\
 	IconThemeUtils.cs		\
 	MainController.cs		\
 	MainWindow.cs			\

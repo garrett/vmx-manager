@@ -256,9 +256,13 @@ namespace VmxManager {
             case VirtualDeviceType.HardDisk:
                 VirtualHardDisk disk = device as VirtualHardDisk;
 
-                MessageDialog dialog = new MessageDialog (this, DialogFlags.Modal, MessageType.Question,
-                                                          ButtonsType.YesNo,
-                                                          Catalog.GetString ("Would you like to delete the file containing the disk data as well?  All data on the disk will be lost."));
+                HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Question,
+                                                                ButtonsType.None,
+                                                                Catalog.GetString ("Delete disk files?"),
+                                                                Catalog.GetString ("Would you like to delete the files containing the disk data, or keep them?  If you delete them, all data on the disk will be lost."));
+                dialog.AddButton (Catalog.GetString ("Keep"), ResponseType.No, true);
+                dialog.AddButton (Stock.Delete, ResponseType.Yes, false);
+                
                 int response = dialog.Run ();
                 dialog.Destroy ();
                 

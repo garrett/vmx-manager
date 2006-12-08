@@ -116,9 +116,10 @@ namespace VmxManager {
 
             havePlayer = Utility.CheckForPlayer ();
             if (!havePlayer) {
-                MessageDialog dialog = new MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
-                                                          ButtonsType.Close,
-                                                          Catalog.GetString ("You do not appear to have VMware Player installed.  It will not be possible to run virtual machines."));
+                HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Warning,
+                                                                ButtonsType.Close,
+                                                                Catalog.GetString ("VMware Player not found"),
+                                                                Catalog.GetString ("You do not appear to have VMware Player installed.  It will not be possible to run virtual machines."));
                 dialog.Run ();
                 dialog.Destroy ();
             }
