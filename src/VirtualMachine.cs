@@ -347,13 +347,17 @@ namespace VmxManager {
         }
 
         public void Save () {
+            CheckConflictingDisks ();
+            
             string vmdir = Path.GetDirectoryName (file);
             if (!Directory.Exists (vmdir)) {
                 Directory.CreateDirectory (vmdir);
-                CreateWatcher ();
             }
 
-            CheckConflictingDisks ();
+            if (!File.Exists (file)) {
+                dict["nvram"] = Name + ".nvram";
+                dict["checkpoint.vmState"] = Name + ".vmss";
+            }
 
             // remove all the existing ide/scsi related values
             foreach (string key in new List<string> (dict.Keys)) {
@@ -362,11 +366,12 @@ namespace VmxManager {
                 }
             }
 
-            // save hard disks and cd drives
+            // save hard disks
             foreach (VirtualDisk disk in hardDisks) {
                 SaveDisk (disk);
             }
 
+            // save cd drives
             foreach (VirtualDisk disk in cds) {
                 SaveDisk (disk);
             }
@@ -398,6 +403,8 @@ namespace VmxManager {
                     writer.WriteLine ("{0} = \"{1}\"", key, dict[key]);
                 }
             }
+
+            CreateWatcher ();
         }
 
         private void SaveDisk (VirtualDisk disk) {
@@ -451,6 +458,27 @@ namespace VmxManager {
             }
 
             Process.Start (String.Format ("vmplayer \"{0}\"", file));
+        }
+
+        public void Delete () {
+            foreach (VirtualHardDisk disk in hardDisks) {
+                disk.Delete ();
+            }
+
+            string dir = Path.GetDirectoryName (file);
+
+            File.Delete (Path.Combine (dir, "vmware.log"));
+            File.Delete (Path.Combine (dir, Name + ".vmss"));
+            File.Delete (Path.Combine (dir, Name + ".vmsd"));
+            File.Delete (Path.Combine (dir, Name + ".nvram"));
+            File.Delete (Path.Combine (dir, Name + ".vmem"));
+            File.Delete (file);
+
+            if (Directory.GetFiles (dir).Length == 0 &&
+                Directory.GetDirectories (dir).Length == 0) {
+                // it's empty, nuke it
+                Directory.Delete (dir);
+            }
         }
 
         public override bool Equals (object o) {

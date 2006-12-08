@@ -48,11 +48,23 @@ namespace VmxManager {
         }
 
         public void OnRemove (object o, EventArgs args) {
+
+            MessageDialog dialog = new MessageDialog (window, DialogFlags.Modal, MessageType.Question,
+                                                      ButtonsType.YesNo,
+                                                      Catalog.GetString ("Would you like to delete the files belonging to the virtual machine as well?  All data in the affected machine(s) will be lost."));
+            
+            int response = dialog.Run ();
+            dialog.Destroy ();
+            
             foreach (TreePath path in vmview.Selection.GetSelectedRows ()) {
                 TreeIter iter;
                 vmview.Model.GetIter (out iter, path);
                 
                 VirtualMachine machine = (VirtualMachine) vmview.Model.GetValue (iter, 0);
+                if (response == (int) ResponseType.Yes) {
+                    machine.Delete ();
+                }
+                
                 manager.RemoveMachine (machine);
             }
         }

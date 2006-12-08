@@ -250,7 +250,18 @@ namespace VmxManager {
             IVirtualDevice device = devview.GetSelectedDevice ();
             switch (device.DeviceType) {
             case VirtualDeviceType.HardDisk:
-                machine.RemoveHardDisk ((VirtualHardDisk) device);
+                VirtualHardDisk disk = device as VirtualHardDisk;
+
+                MessageDialog dialog = new MessageDialog (this, DialogFlags.Modal, MessageType.Question,
+                                                          ButtonsType.YesNo,
+                                                          Catalog.GetString ("Would you like to delete the file containing the disk data as well?  All data on the disk will be lost."));
+                int response = dialog.Run ();
+                dialog.Destroy ();
+                
+                machine.RemoveHardDisk (disk);
+                if (response == (int) ResponseType.Yes) {
+                    disk.Delete ();
+                }
                 break;
             case VirtualDeviceType.CdRom:
                 machine.RemoveCdDrive ((VirtualCdDrive) device);
