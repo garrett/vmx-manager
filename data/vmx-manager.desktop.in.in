@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+_Name=Virtual Machine Manager
+_GenericName=Virtual Machine Manager
+Comment=Create, modify, and manage VMware virtual machines
+Exec=vmx-manager
+Icon=vmx-manager.svg
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Application;Utility;
+X-SuSE-translate=true

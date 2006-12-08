@@ -32,6 +32,8 @@ namespace VmxManager {
                                                                                   Stock.Ok, ResponseType.Ok) {
             this.disk = disk;
 
+            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "diskConfigContent");
             xml.Autoconnect (this);
 

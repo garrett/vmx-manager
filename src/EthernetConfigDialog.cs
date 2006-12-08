@@ -20,6 +20,8 @@ namespace VmxManager {
                                                                                   Stock.Ok, ResponseType.Ok) {
             this.device = device;
 
+            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "ethernetConfigContent");
             xml.Autoconnect (this);
 

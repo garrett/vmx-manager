@@ -50,6 +50,8 @@ namespace VmxManager {
 
             this.machine = machine;
 
+            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+
             ActionEntry[] actionList = {
                 new ActionEntry ("AddHardDisk", null,
                                  Catalog.GetString ("Hard Disk"), null,

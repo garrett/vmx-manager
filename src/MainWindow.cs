@@ -56,6 +56,8 @@ namespace VmxManager {
         private static extern IntPtr shell_window_get_type ();
 
         public MainWindow () : base ("Virtual Machine Manager") {
+            IconThemeUtils.SetWindowIcon (this, "vmx-manager");
+            
             manager = new VirtualMachineManager ();
             controller = new MainController ();
             controller.MainWindow = this;
