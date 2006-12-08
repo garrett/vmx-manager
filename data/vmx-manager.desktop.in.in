@@ -9,5 +9,5 @@ Icon=vmx-manager
 StartupNotify=true
 Terminal=false
 Type=Application
-Categories=GNOME;System;X-Novell-Main;
+Categories=Application;Utility;Settings;
 X-SuSE-translate=true
