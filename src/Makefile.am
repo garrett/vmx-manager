@@ -52,6 +52,6 @@ vmx-manager.exe: $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES)
 	$(MCS) -debug -out:$@ $(VMXMAN_EXPANDED_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS) -r:$(top_builddir)/hal-sharp/Hal.dll
 
 CLEANFILES = $(bin_SCRIPTS) $(ASSEMBLY)
-EXTRA_DIST = $(VMXMAN_SOURCE) vmx-manager.in
+EXTRA_DIST = $(VMXMAN_SOURCE) vmx-manager.in vmx-manager.exe.config
 DISTCLEANFILES = *.mdb
 
