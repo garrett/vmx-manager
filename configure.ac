@@ -26,6 +26,7 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 dbus-sharp/Makefile
+dbus-sharp/NDesk.DBus.GLib.dll.config
 hal-sharp/Makefile
 src/Makefile
 src/vmx-manager
