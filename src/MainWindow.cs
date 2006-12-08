@@ -51,6 +51,8 @@ namespace VmxManager {
         private ActionGroup actions;
         private UIManager ui;
 
+        private bool havePlayer;
+
         /* this kills kittens */
         [DllImport ("libslab.so.0")]
         private static extern IntPtr shell_window_get_type ();
@@ -84,7 +86,7 @@ namespace VmxManager {
                                  Catalog.GetString ("Start the virtual machine"),
                                  controller.OnStart),
                 new ActionEntry ("Configure", Stock.Properties,
-                                 Catalog.GetString ("Configure..."), "<control>p",
+                                 Catalog.GetString ("Configure Machine"), "<control>p",
                                  Catalog.GetString ("Configure the connected devices"),
                                  controller.OnConfigure),
                 new ActionEntry ("Remove", Stock.Remove,
@@ -112,6 +114,15 @@ namespace VmxManager {
             ui.InsertActionGroup (actions, 0);
             ui.AddUiFromResource ("vmx-manager.xml");
 
+            havePlayer = Utility.CheckForPlayer ();
+            if (!havePlayer) {
+                MessageDialog dialog = new MessageDialog (this, DialogFlags.Modal, MessageType.Warning,
+                                                          ButtonsType.Close,
+                                                          Catalog.GetString ("You do not appear to have VMware Player installed.  It will not be possible to run virtual machines."));
+                dialog.Run ();
+                dialog.Destroy ();
+            }
+            
             SetActionsSensitive ();
 
             DefaultWidth = 600;
@@ -196,7 +207,10 @@ namespace VmxManager {
         private void SetActionsSensitive () {
             bool machineSelected = vmview.Selection.CountSelectedRows () > 0;
 
-            startButton.Sensitive = configureButton.Sensitive = removeButton.Sensitive = actions.GetAction ("Start").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+            configureButton.Sensitive = removeButton.Sensitive = actions.GetAction ("Configure").Sensitive =
+                actions.GetAction ("Remove").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+
+            startButton.Sensitive = actions.GetAction ("Start").Sensitive = configureButton.Sensitive && havePlayer;
 
             int count = manager.Machines.Count;
             if (count > 0 && placeholder.Parent != null) {

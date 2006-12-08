@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Mono.Unix;
 using Mono.Unix.Native;
 using Gtk;
@@ -171,6 +172,17 @@ namespace VmxManager {
             dialog.Title = Catalog.GetString ("Virtual Machine Manager Error");
             dialog.Run ();
             dialog.Destroy ();
+        }
+
+        [DllImport ("libglib-2.0.so.0")]
+        private static extern bool g_find_program_in_path (string program);
+
+        public static bool CheckProgramAvailable (string program) {
+            return g_find_program_in_path (program);
+        }
+
+        public static bool CheckForPlayer () {
+            return CheckProgramAvailable ("vmplayer");
         }
     }
 }

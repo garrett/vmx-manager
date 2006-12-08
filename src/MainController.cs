@@ -26,6 +26,9 @@ namespace VmxManager {
         }
 
         public void OnStart (object o, EventArgs args) {
+            if (!Utility.CheckForPlayer ())
+                return;
+            
             foreach (TreePath path in vmview.Selection.GetSelectedRows ()) {
                 TreeIter iter;
                 vmview.Model.GetIter (out iter, path);

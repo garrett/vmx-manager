@@ -30,9 +30,6 @@ namespace VmxManager {
         private long capacity;
         private HardDiskType type;
 
-        [DllImport ("libglib-2.0.so.0")]
-        private static extern bool g_find_program_in_path (string program);
-
         public static IList<HardDiskType> SupportedTypes {
             get {
                 if (CheckVDiskManager ()) {
@@ -185,11 +182,11 @@ namespace VmxManager {
         }
 
         private static bool CheckVDiskManager () {
-            return g_find_program_in_path ("vmware-vdiskmanager");
+            return Utility.CheckProgramAvailable ("vmware-vdiskmanager");
         }
 
         private static bool CheckQemu () {
-            return g_find_program_in_path ("qemu-img");
+            return Utility.CheckProgramAvailable ("qemu-img");
         }
     }
 
