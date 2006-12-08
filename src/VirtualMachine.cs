@@ -391,7 +391,12 @@ namespace VmxManager {
             if (disk is VirtualHardDisk) {
                 disktype = "disk";
             } else {
-                disktype = Utility.CdDeviceTypeToString ((disk as VirtualCdDrive).CdDeviceType);
+                CdDeviceType cdtype = (disk as VirtualCdDrive).CdDeviceType;
+                if (OperatingSystem.IsLegacy && cdtype == CdDeviceType.Raw) {
+                    cdtype = CdDeviceType.Legacy;
+                }
+                
+                disktype = Utility.CdDeviceTypeToString (cdtype);
             }
             
             dict[basekey + "deviceType"] = disktype;

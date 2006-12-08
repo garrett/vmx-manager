@@ -36,7 +36,12 @@ VMXMAN_RESOURCES =		\
 	operating-systems.csv	\
 	vmx-manager.glade	\
 	vmx-manager.xml		\
-	vmx-manager-config.xml
+	vmx-manager-config.xml	\
+	gnome-dev-cdrom.png     \
+	gnome-dev-harddisk.png  \
+	gnome-dev-ethernet.png  \
+	gnome-dev-floppy.png
+
 
 VMXMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMXMAN_RESOURCES), $(top_srcdir)/data/$(resource))
 

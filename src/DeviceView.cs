@@ -24,7 +24,7 @@ namespace VmxManager {
 
             cdromPixbuf = IconThemeUtils.LoadIcon ("gnome-dev-cdrom", 24);
             hdPixbuf = IconThemeUtils.LoadIcon ("gnome-dev-harddisk", 24);
-            ethernetPixbuf = IconThemeUtils.LoadIcon ("gnome-dev-pcmcia", 24); // FIXME
+            ethernetPixbuf = IconThemeUtils.LoadIcon ("gnome-dev-ethernet", 24);
             floppyPixbuf = IconThemeUtils.LoadIcon ("gnome-dev-floppy", 24);
 
         }
