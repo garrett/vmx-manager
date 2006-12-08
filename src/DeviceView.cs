@@ -29,19 +29,6 @@ namespace VmxManager {
 
         }
 
-        protected override void OnRowActivated (TreePath path, TreeViewColumn column) {
-            /*
-            TreeIter iter;
-            Model.GetIter (out iter, path);
-
-            VirtualMachine machine = (VirtualMachine) Model.GetValue (iter, 0);
-            if (!machine.IsRunning) {
-                Console.WriteLine ("Starting machine: "+ machine.Name);
-                machine.Start ();
-            }
-            */
-        }
-
         public IVirtualDevice GetSelectedDevice () {
             if (Selection.CountSelectedRows () == 0)
                 return null;

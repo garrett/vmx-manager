@@ -23,6 +23,9 @@ namespace VmxManager {
         [Glade.Widget]
         private SpinButton diskSizeSpin;
 
+        [Glade.Widget]
+        private ToggleButton allocateDiskCheck;
+
         public HardDiskConfigDialog (VirtualHardDisk disk, bool capacitySensitive, Window parent) : base (Catalog.GetString ("Configure Hard Disk"),
                                                                                   parent, DialogFlags.NoSeparator,
                                                                                   Stock.Cancel, ResponseType.Cancel,
@@ -44,6 +47,8 @@ namespace VmxManager {
                 
                 this.Destroy ();
             };
+
+            allocateDiskCheck.Sensitive = capacitySensitive && VirtualHardDisk.SupportedTypes.Contains (HardDiskType.SplitFlat);
 
             Load ();
         }
@@ -72,6 +77,12 @@ namespace VmxManager {
 
             if (diskSizeSpin.Sensitive) {
                 disk.Capacity = (long) (diskSizeSpin.Value * (double) 1024 * (double) 1024 * (double) 1024);
+            }
+
+            if (allocateDiskCheck.Sensitive && allocateDiskCheck.Active) {
+                disk.HardDiskType = HardDiskType.SplitFlat;
+            } else {
+                disk.HardDiskType = HardDiskType.SingleSparse;
             }
         }
     }

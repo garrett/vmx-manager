@@ -87,6 +87,10 @@ namespace VmxManager {
             guestOsCombo.AddAttribute (renderer, "text", 0);
 
             devview = new DeviceView ();
+            devview.RowActivated += delegate {
+                OnConfigureDevice (this, new EventArgs ());
+            };
+            
             devview.Selection.Changed += OnDeviceSelectionChanged;
             devmodel = new DeviceModel (machine);
             devview.Model = devmodel;
@@ -153,7 +157,7 @@ namespace VmxManager {
             }
         }
 
-        private void Save () {
+        private bool Save () {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
             machine.SoundEnabled = soundToggle.Active;
@@ -173,19 +177,30 @@ namespace VmxManager {
             foreach (VirtualHardDisk hd in machine.HardDisks) {
                 if (hd.FileName == null) {
                     hd.FileName = GetNewDiskPath (vmdir);
-                    hd.Create (HardDiskType.SingleSparse);
+                    hd.Create ();
                 }
             }
 
-            machine.Save ();
+            try {
+                machine.Save ();
+            } catch (Exception e) {
+                Utility.ShowError (Catalog.GetString ("Could not save changes"), e.Message);
+                return false;
+            }
+
+            return true;
         }
 
         protected override void OnResponse (ResponseType response) {
+            bool destroy = true;
+            
             if (response == ResponseType.Ok) {
-                Save ();
+                destroy = Save ();
             }
 
-            Destroy ();
+            if (destroy) {
+                Destroy ();
+            }
         }
 
         private void OnAddHardDisk (object o, EventArgs args) {

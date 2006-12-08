@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace VmxManager {
 
@@ -26,6 +28,25 @@ namespace VmxManager {
         private int heads;
         private int cylinders;
         private long capacity;
+        private HardDiskType type;
+
+        [DllImport ("libglib-2.0.so.0")]
+        private static extern bool g_find_program_in_path (string program);
+
+        public static IList<HardDiskType> SupportedTypes {
+            get {
+                if (CheckVDiskManager ()) {
+                    return new List<HardDiskType> (new HardDiskType[] { HardDiskType.SingleSparse,
+                                                                        HardDiskType.SplitSparse,
+                                                                        HardDiskType.SingleFlat,
+                                                                        HardDiskType.SplitFlat });
+                } else if (CheckQemu ()) {
+                    return new List<HardDiskType> (new HardDiskType[] { HardDiskType.SingleSparse });
+                } else {
+                    return new List<HardDiskType> ();
+                }
+            }
+        }
 
         public long Capacity {
             get {
@@ -36,6 +57,17 @@ namespace VmxManager {
                 }
             } set {
                 capacity = value;
+            }
+        }
+
+        public HardDiskType HardDiskType {
+            get { return type; }
+            set {
+                if (file != null && File.Exists (file)) {
+                    throw new ApplicationException ("Cannot change the hard disk type of an existing disk");
+                }
+                
+                type = value;
             }
         }
 
@@ -103,24 +135,61 @@ namespace VmxManager {
         }
 
         private static void CreateDiskFile (string file, long sizeInMb, HardDiskType type) {
-            // FIXME: use vmware-vdiskmanager if available
-            // FIXME: throw something if we can't create the requested HardDiskType?
+            Process proc;
+
+            if (CheckVDiskManager ()) {
+                int vdiskType = 0;
+                switch (type) {
+                case HardDiskType.SingleSparse:
+                    vdiskType = 0;
+                    break;
+                case HardDiskType.SplitSparse:
+                    vdiskType = 1;
+                    break;
+                case HardDiskType.SingleFlat:
+                    vdiskType = 2;
+                    break;
+                case HardDiskType.SplitFlat:
+                    vdiskType = 3;
+                    break;
+                }
+
+                proc = Process.Start ("vmware-vdiskmanager",
+                                      String.Format ("-c -s {0}Mb -a ide -t {1} \"{2}\"", sizeInMb,
+                                                     vdiskType, file));
+            } else if (CheckQemu () && type == HardDiskType.SingleSparse) {
+                proc = Process.Start ("qemu-img", String.Format ("create -f vmdk \"{0}\" \"{1}\"",
+                                                                 file, sizeInMb * 1024));
+            } else {
+                throw new ApplicationException ("Cannot create disk");
+            }
             
-            Process proc = Process.Start ("/usr/bin/qemu-img", String.Format ("create -f vmdk \"{0}\" \"{1}\"",
-                                                                              file, sizeInMb * 1024));
             proc.WaitForExit ();
             if (proc.ExitCode != 0) {
                 throw new ApplicationException ("Failed to create virtual disk");
             }
         }
 
-        public void Create (HardDiskType type) {
+        public void Delete () {
+            // FIXME: does not work for split disks currently
+            File.Delete (file);
+        }
+
+        public void Create () {
             CreateDiskFile (FileName, Capacity / 1024 / 1024, type);
         }
 
         public static VirtualHardDisk Create (string file, long sizeInMb, HardDiskType type) {
             CreateDiskFile (file, sizeInMb, type);
             return new VirtualHardDisk (file, 0, 0, DiskBusType.Ide);
+        }
+
+        private static bool CheckVDiskManager () {
+            return g_find_program_in_path ("vmware-vdiskmanager");
+        }
+
+        private static bool CheckQemu () {
+            return g_find_program_in_path ("qemu-img");
         }
     }
 

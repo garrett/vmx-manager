@@ -324,12 +324,36 @@ namespace VmxManager {
             }
         }
 
+        private void CheckConflictingDisk (VirtualDisk disk, List<int> list) {
+            int hash = String.Format ("{0}{1}{2}", disk.BusNumber, disk.DeviceNumber, disk.BusType).GetHashCode ();
+            if (list.Contains (hash)) {
+                throw new ApplicationException (Catalog.GetString ("There are two conflicting disks.  Please change the position of one of the disks and try again."));
+            }
+
+            list.Add (hash);
+        }
+
+        private void CheckConflictingDisks () {
+            // this is clumsy
+            List<int> list = new List<int> ();
+
+            foreach (VirtualDisk disk in hardDisks) {
+                CheckConflictingDisk (disk, list);
+            }
+
+            foreach (VirtualDisk disk in cds) {
+                CheckConflictingDisk (disk, list);
+            }
+        }
+
         public void Save () {
             string vmdir = Path.GetDirectoryName (file);
             if (!Directory.Exists (vmdir)) {
                 Directory.CreateDirectory (vmdir);
                 CreateWatcher ();
             }
+
+            CheckConflictingDisks ();
 
             // remove all the existing ide/scsi related values
             foreach (string key in new List<string> (dict.Keys)) {

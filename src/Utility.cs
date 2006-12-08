@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using Mono.Unix;
+using Mono.Unix.Native;
 using Gtk;
 
 namespace VmxManager {
