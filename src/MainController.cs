@@ -90,7 +90,7 @@ namespace VmxManager {
             dialog.LocalOnly = true;
 
             FileFilter filter = new FileFilter ();
-            filter.Name = Catalog.GetString ("CD Images");
+            filter.Name = Catalog.GetString (Catalog.GetString ("CD Images"));
             filter.AddPattern ("*.iso");
 
             dialog.AddFilter (filter);

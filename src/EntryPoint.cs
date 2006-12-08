@@ -8,7 +8,7 @@ namespace VmxManager {
     public class EntryPoint {
         
         public static int Main (string[] args) {
-            
+
             if (args.Length == 0) {
                 RunGUI ();
                 return 0;

@@ -1,1 +1,1 @@
-SUBDIRS = src data
+SUBDIRS = dbus-sharp hal-sharp src data

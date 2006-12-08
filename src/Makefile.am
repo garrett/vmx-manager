@@ -7,6 +7,8 @@ asm_DATA = $(ASSEMBLY) $(ASSEMBLY).mdb $(ASSEMBLY).config
 bin_SCRIPTS = vmx-manager
 
 VMXMAN_SOURCE =				\
+	CdConfigDialog.cs		\
+	CdDriveCombo.cs			\
 	ConfigDialog.cs			\
 	DeviceModel.cs			\
 	DeviceView.cs			\
@@ -41,6 +43,6 @@ VMXMAN_EXPANDED_RESOURCES = $(foreach resource,$(VMXMAN_RESOURCES), $(top_srcdir
 VMXMAN_EXPANDED_RESOURCES_BUILD = $(foreach resource,$(VMXMAN_EXPANDED_RESOURCES), $(addprefix -resource:,$(resource)),$(notdir $(resource)))
 
 vmx-manager.exe: $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES)
-	$(MCS) -debug -out:$@ $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS)
+	$(MCS) -debug -out:$@ $(VMXMAN_SOURCE) $(VMXMAN_EXPANDED_RESOURCES_BUILD) $(VMXMAN_LIBS) -r:$(top_builddir)/hal-sharp/Hal.dll
 
-CLEANFILES = $(bin_SCRIPTS) $(ASSEMBLIES)
+CLEANFILES = $(bin_SCRIPTS) $(ASSEMBLY)

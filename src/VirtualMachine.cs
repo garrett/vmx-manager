@@ -299,7 +299,7 @@ namespace VmxManager {
                             hardDisks.Add (disk);
                         } else {
                             VirtualCdDrive drive = new VirtualCdDrive (diskFile, i, j, busType,
-                                                                       ParseCdType (devtype));
+                                                                       Utility.ParseCdDeviceType (devtype));
                             cds.Add (drive);
                         }
                     }
@@ -324,34 +324,6 @@ namespace VmxManager {
             }
         }
 
-        private CdDeviceType ParseCdType (string val) {
-            switch (val) {
-            case "cdrom-raw":
-                return CdDeviceType.Raw;
-            case "cdrom-image":
-                return CdDeviceType.Iso;
-            case "atapi-cdrom":
-                return CdDeviceType.Legacy;
-            default:
-                Console.Error.WriteLine ("WARNING: Unknown disk type '{0}'", val);
-                return CdDeviceType.Raw;
-            }
-        }
-
-        private string CdTypeToString (CdDeviceType cdType) {
-            switch (cdType) {
-            case CdDeviceType.Raw:
-                return "cdrom-raw";
-            case CdDeviceType.Iso:
-                return "cdrom-image";
-            case CdDeviceType.Legacy:
-                return "atapi-cdrom";
-            default:
-                Console.WriteLine ("WARNING: Unknown disk type '{0}'", cdType);
-                return "cdrom-raw";
-            }
-        }
-
         public void Save () {
             string vmdir = Path.GetDirectoryName (file);
             if (!Directory.Exists (vmdir)) {
@@ -366,19 +338,16 @@ namespace VmxManager {
                 }
             }
 
+            // save hard disks and cd drives
             foreach (VirtualDisk disk in hardDisks) {
-                string diskFile = disk.FileName;
-                if (diskFile != null && diskFile != "auto detect" && Path.IsPathRooted (diskFile) &&
-                    Path.GetDirectoryName (diskFile) == Path.GetDirectoryName (file)) {
-                    diskFile = Path.GetFileName (diskFile);
-                }
-                
-                string basekey = GetDiskBaseKey (disk);
-                dict[basekey + "present"] = "TRUE";
-                dict[basekey + "fileName"] = diskFile;
-                dict[basekey + "deviceType"] = "disk";
+                SaveDisk (disk);
             }
 
+            foreach (VirtualDisk disk in cds) {
+                SaveDisk (disk);
+            }
+
+            // save ethernet devices
             for (int i = 0; i < ethernetDevices.Count; i++) {
                 VirtualEthernet ethernet = ethernetDevices[i];
 
@@ -396,6 +365,7 @@ namespace VmxManager {
                 this[basekey + "virtualDev"] = Utility.EthernetDeviceTypeToString (ethernet.EthernetType);
             }
 
+            // write the file out
             using (StreamWriter writer = new StreamWriter (File.Open (file, FileMode.Create))) {
                 List<string> keys = new List<string> (dict.Keys);
                 keys.Sort ();
@@ -404,6 +374,27 @@ namespace VmxManager {
                     writer.WriteLine ("{0} = \"{1}\"", key, dict[key]);
                 }
             }
+        }
+
+        private void SaveDisk (VirtualDisk disk) {
+            string diskFile = disk.FileName;
+            if (diskFile != null && diskFile != "auto detect" && Path.IsPathRooted (diskFile) &&
+                Path.GetDirectoryName (diskFile) == Path.GetDirectoryName (file)) {
+                diskFile = Path.GetFileName (diskFile);
+            }
+            
+            string basekey = GetDiskBaseKey (disk);
+            dict[basekey + "present"] = "TRUE";
+            dict[basekey + "fileName"] = diskFile;
+            
+            string disktype;
+            if (disk is VirtualHardDisk) {
+                disktype = "disk";
+            } else {
+                disktype = Utility.CdDeviceTypeToString ((disk as VirtualCdDrive).CdDeviceType);
+            }
+            
+            dict[basekey + "deviceType"] = disktype;
         }
 
         public void Dump () {

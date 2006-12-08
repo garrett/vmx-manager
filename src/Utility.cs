@@ -71,6 +71,34 @@ namespace VmxManager {
             }
         }
 
+        public static CdDeviceType ParseCdDeviceType (string val) {
+            switch (val) {
+            case "cdrom-raw":
+                return CdDeviceType.Raw;
+            case "cdrom-image":
+                return CdDeviceType.Iso;
+            case "atapi-cdrom":
+                return CdDeviceType.Legacy;
+            default:
+                Console.Error.WriteLine ("WARNING: Unknown disk type '{0}'", val);
+                return CdDeviceType.Raw;
+            }
+        }
+
+        public static string CdDeviceTypeToString (CdDeviceType cdType) {
+            switch (cdType) {
+            case CdDeviceType.Raw:
+                return "cdrom-raw";
+            case CdDeviceType.Iso:
+                return "cdrom-image";
+            case CdDeviceType.Legacy:
+                return "atapi-cdrom";
+            default:
+                Console.WriteLine ("WARNING: Unknown disk type '{0}'", cdType);
+                return "cdrom-raw";
+            }
+        }
+
         public static bool ReadConfigLine (string line, out string key, out string value) {
             string[] splitLine = line.Split (new char[] { '=' }, 2);
                     

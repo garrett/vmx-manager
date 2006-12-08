@@ -202,7 +202,16 @@ namespace VmxManager {
         }
 
         private void OnAddCdDrive (object o, EventArgs args) {
-            Console.WriteLine ("Adding cd rom");
+            VirtualCdDrive drive = new VirtualCdDrive ("/dev/hdc", 0, 1, DiskBusType.Ide, CdDeviceType.Raw);
+
+            CdConfigDialog dialog = new CdConfigDialog (drive, this);
+            dialog.Response += delegate (object b, ResponseArgs rargs) {
+                if (rargs.ResponseId == ResponseType.Ok) {
+                    machine.AddCdDrive (drive);
+                }
+            };
+
+            dialog.Show ();
         }
 
         private void OnAddEthernet (object o, EventArgs args) {
@@ -250,6 +259,9 @@ namespace VmxManager {
                 break;
             case VirtualDeviceType.Ethernet:
                 dialog = new EthernetConfigDialog ((VirtualEthernet) dev, this);
+                break;
+            case VirtualDeviceType.CdRom:
+                dialog = new CdConfigDialog ((VirtualCdDrive) dev, this);
                 break;
             default:
                 break;
