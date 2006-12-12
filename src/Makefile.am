@@ -19,8 +19,10 @@ VMXMAN_SOURCE =				\
 	HardDiskConfigDialog.cs		\
 	HigMessageDialog.cs		\
 	IconThemeUtils.cs		\
+	LinkLabel.cs			\
 	MainController.cs		\
 	MainWindow.cs			\
+	MessagePane.cs			\
 	OSModel.cs			\
 	Utility.cs			\
 	VirtualCdDrive.cs		\

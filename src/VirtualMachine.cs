@@ -473,9 +473,15 @@ namespace VmxManager {
             string dir = Path.GetDirectoryName (file);
 
             File.Delete (Path.Combine (dir, "vmware.log"));
-            File.Delete (Path.Combine (dir, Name + ".vmss"));
+            if (dict.ContainsKey ("nvram")) {
+                File.Delete (Path.Combine (dir, dict["nvram"]));
+            }
+
+            if (dict.ContainsKey ("checkpoint.vmState")) {
+                File.Delete (Path.Combine (dir, dict["checkpoint.vmState"]));
+            }
+
             File.Delete (Path.Combine (dir, Name + ".vmsd"));
-            File.Delete (Path.Combine (dir, Name + ".nvram"));
             File.Delete (Path.Combine (dir, Name + ".vmem"));
             File.Delete (file);
 

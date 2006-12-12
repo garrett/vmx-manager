@@ -40,8 +40,7 @@ namespace VmxManager {
         [Glade.Widget]
         private Button addExistingButton;
 
-        [Glade.Widget]
-        private Widget placeholder;
+        private MessagePane placeholder;
 
         private VirtualMachineManager manager;
         private VMView vmview;
@@ -68,8 +67,10 @@ namespace VmxManager {
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "mainContent");
             xml.Autoconnect (this);
 
-            xml = new Glade.XML ("vmx-manager.glade", "placeholder");
-            xml.Autoconnect (this);
+            placeholder = new MessagePane ();
+            placeholder.HeaderIconStock = Stock.DialogInfo;
+            placeholder.HeaderMarkup = Catalog.GetString ("<b>There are currently no virtual machines.</b>");
+            placeholder.Append (Catalog.GetString ("You can add or create a new virtual machine using the buttons on the left"), false);
 
             vmview = new VMView (controller);
             controller.VMView = vmview;
