@@ -30,6 +30,11 @@ install-data-local:
 		echo "***   $(gtk_update_icon_cache)"; \
 	fi
 
+uninstall-local:
+	rm -f $(DESTDIR)$(hicolordir)/scalable/apps/vmx-manager.svg
+	rm -f $(DESTDIR)$(hicolordir)/48x48/apps/vmx-manager.png
+	rm -f $(DESTDIR)$(hicolordir)/24x24/apps/vmx-manager.png
+
 EXTRA_DIST =				\
 	vmx-manager.glade		\
 	vmx-manager.xml			\
