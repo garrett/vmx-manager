@@ -297,14 +297,21 @@ namespace VmxManager {
                             diskFile = Path.Combine (Path.GetDirectoryName (file), diskFile);
                         }
 
+                        ScsiDeviceType scsiType = OperatingSystem.SuggestedScsiDeviceType;
+                        if (this[basekey + "virtualDev"] != null) {
+                            scsiType = Utility.ParseScsiDeviceType (this[basekey + "virtualDev"]);
+                        }
+
                         string devtype = this[basekey + "deviceType"];
                         if (devtype == null || devtype == "disk") {
                             VirtualHardDisk disk = new VirtualHardDisk (diskFile,
                                                                         i, j, busType);
+                            disk.ScsiDeviceType = scsiType;
                             hardDisks.Add (disk);
                         } else {
                             VirtualCdDrive drive = new VirtualCdDrive (diskFile, i, j, busType,
                                                                        Utility.ParseCdDeviceType (devtype));
+                            drive.ScsiDeviceType = scsiType;
                             cds.Add (drive);
                         }
                     }

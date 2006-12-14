@@ -8,6 +8,7 @@ namespace VmxManager {
         protected ushort devnum;
         protected ushort busnum;
         protected DiskBusType busType;
+        protected ScsiDeviceType scsiType;
 
         public abstract VirtualDeviceType DeviceType { get; }
         public abstract string DisplayName { get; }
@@ -35,6 +36,11 @@ namespace VmxManager {
         public DiskBusType BusType {
             get { return busType; }
             set { busType = value; }
+        }
+
+        public ScsiDeviceType ScsiDeviceType {
+            get { return scsiType; }
+            set { scsiType = value; }
         }
     }
 }

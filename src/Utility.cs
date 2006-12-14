@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Mono.Unix;
@@ -7,13 +8,30 @@ using Gtk;
 
 namespace VmxManager {
 
+    public class ProgressArgs : EventArgs {
+
+        private double progress;
+
+        public double Progress {
+            get { return progress; }
+        }
+        
+        public ProgressArgs (double progress) {
+            this.progress = progress;
+        }
+    }
+
+    public delegate void ProgressHandler (object o, ProgressArgs args);
+
     public class Utility {
 
         public static ScsiDeviceType ParseScsiDeviceType (string device) {
             switch (device) {
             case "BUS":
+            case "buslogic":
                 return ScsiDeviceType.Buslogic;
             case "LSI":
+            case "lsilogic":
                 return ScsiDeviceType.LSILogic;
             default:
                 Console.Error.WriteLine ("Unknown SCSI device type '{0}'", device);
@@ -102,6 +120,93 @@ namespace VmxManager {
             }
         }
 
+        public static HardDiskType ParseHardDiskType (string val) {
+            switch (val) {
+            case "monolithicSparse":
+                return HardDiskType.SingleSparse;
+            case "monolithicFlat":
+                return HardDiskType.SingleFlat;
+            case "twoGbMaxExtentSparse":
+                return HardDiskType.SplitSparse;
+            case "twoGbMaxExtentFlat":
+                return HardDiskType.SplitFlat;
+            default:
+                Console.Error.WriteLine ("WARNING: Unknown disk type '{0}'", val);
+                return HardDiskType.SingleSparse;
+            }
+        }
+
+        public static string HardDiskTypeToString (HardDiskType type) {
+            switch (type) {
+            case HardDiskType.SingleSparse:
+                return "monolithicSparse";
+            case HardDiskType.SingleFlat:
+                return "monolithicFlat";
+            case HardDiskType.SplitSparse:
+                return "twoGbMaxExtentSparse";
+            case HardDiskType.SplitFlat:
+                return "twoGbMaxExtentFlat";
+            default:
+                return null;
+            }
+        }
+
+        public static ExtentAccess ParseExtentAccess (string val) {
+            switch (val) {
+            case "RW":
+                return ExtentAccess.ReadWrite;
+            case "RDONLY":
+                return ExtentAccess.ReadOnly;
+            case "NOACCESS":
+                return ExtentAccess.None;
+            default:
+                throw new ApplicationException ("Unknown extent type: " + val);
+            }
+        }
+
+        public static string ExtentAccessToString (ExtentAccess access) {
+            switch (access) {
+            case ExtentAccess.ReadWrite:
+                return "RW";
+            case ExtentAccess.ReadOnly:
+                return "RDONLY";
+            case ExtentAccess.None:
+                return "NOACCESS";
+            default:
+                return null;
+            }
+        }
+
+        public static ExtentType ParseExtentType (string val) {
+            switch (val) {
+            case "FLAT":
+                return ExtentType.Flat;
+            case "SPARSE":
+                return ExtentType.Sparse;
+            default:
+                throw new ApplicationException ("Unknown extent type: " + val);
+            }
+        }
+
+        public static string ExtentTypeToString (ExtentType type) {
+            switch (type) {
+            case ExtentType.Flat:
+                return "FLAT";
+            case ExtentType.Sparse:
+                return "SPARSE";
+            default:
+                return null;
+            }
+        }
+
+        public static string StripDoubleQuotes (string value) {
+            if (value[0] == '"' && value[value.Length - 1] == '"') {
+                value = value.Substring (1, value.Length - 2);
+            }
+
+            return value;
+        }
+
         public static bool ReadConfigLine (string line, out string key, out string value) {
             string[] splitLine = line.Split (new char[] { '=' }, 2);
                     
@@ -113,11 +218,7 @@ namespace VmxManager {
                 
             key = splitLine[0].Trim ();
 
-            value = splitLine[1].Trim ();
-            if (value[0] == '"') {
-                // naively strip the double quotes
-                value = value.Substring (1, value.Length - 2);
-            }
+            value = StripDoubleQuotes (splitLine[1].Trim ());
 
             return true;
         }
@@ -188,6 +289,61 @@ namespace VmxManager {
 
         public static bool CheckForPlayer () {
             return CheckProgramAvailable ("vmplayer");
+        }
+
+        public static long CeilingDivide (long a, long b) {
+            long rem = 0;
+
+            long result = Math.DivRem (a, b, out rem);
+            if (rem > 0) {
+                result++;
+            }
+
+            return result;
+        }
+
+        public static int CeilingDivide (int a, int b) {
+            int rem = 0;
+
+            int result = Math.DivRem (a, b, out rem);
+            if (rem > 0) {
+                result++;
+            }
+
+            return result;
+        }
+
+        public static void WritePadding (BinaryWriter writer, long amount) {
+            WritePadding (writer, amount, null);
+        }
+        
+        public static void WritePadding (BinaryWriter writer, long amount, ProgressHandler handler) {
+            int chunkSize = 8192;
+            
+            byte[] zeros = new byte[chunkSize];
+            long written = 0;
+
+            double lastProgress = 0.0;
+            
+            while (written < amount) {
+                long diff = amount - written;
+                if (diff >= chunkSize) {
+                    writer.Write (zeros);
+                    written += chunkSize;
+                } else {
+                    writer.Write (new byte[diff]);
+                    written += diff;
+                }
+
+                double progress = (double) written / (double) amount;
+                if (progress >= (lastProgress + 0.01)) {
+                    lastProgress = progress;
+
+                    if (handler != null) {
+                        handler (null, new ProgressArgs (progress));
+                    }
+                }
+            }
         }
     }
 }

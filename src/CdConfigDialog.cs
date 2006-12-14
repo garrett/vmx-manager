@@ -45,6 +45,10 @@ namespace VmxManager {
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "cdConfigContent");
             xml.Autoconnect (this);
 
+            busTypeCombo.Changed += delegate {
+                PopulateDeviceNumberCombo ();
+            };
+
             VBox.Add (cdConfigContent);
             cdConfigContent.ShowAll ();
 
@@ -75,6 +79,29 @@ namespace VmxManager {
             SetSensitivity ();
         }
 
+        private void PopulateDeviceNumberCombo () {
+            int current = deviceNumberCombo.Active;
+            
+            for (int i = 0; i < 7; i++) {
+                deviceNumberCombo.RemoveText (0);
+            }
+
+            int max = 2;
+            if (busTypeCombo.Active == 1) {
+                max = 7;
+            }
+
+            for (int i = 0; i < max; i++) {
+                deviceNumberCombo.AppendText (i.ToString ());
+            }
+
+            if (current < max) {
+                deviceNumberCombo.Active = current;
+            } else {
+                deviceNumberCombo.Active = max - 1;
+            }
+        }
+
         private void Load () {
             if (drive.BusType == DiskBusType.Ide) {
                 busTypeCombo.Active = 0;
@@ -86,7 +113,8 @@ namespace VmxManager {
 
             busNumberCombo.Active = drive.BusNumber;
             deviceNumberCombo.Active = drive.DeviceNumber;
-
+            combo.Active = 0;
+            
             if ((drive.CdDeviceType == CdDeviceType.Raw ||
                  drive.CdDeviceType == CdDeviceType.Legacy) &&
                 physicalDriveRadio.Sensitive) {
@@ -94,6 +122,12 @@ namespace VmxManager {
                 physicalDriveRadio.Active = true;
                 if (combo.Sensitive && !combo.SetActiveDevice (drive.FileName)) {
                     combo.Active = 0;
+                }
+            } else {
+                isoRadio.Active = true;
+
+                if (drive.FileName != null) {
+                    isoChooserButton.SetFilename (drive.FileName);
                 }
             }
                 

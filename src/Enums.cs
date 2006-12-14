@@ -44,4 +44,14 @@ namespace VmxManager {
         Scsi,
     }
 
+    public enum ExtentAccess {
+        ReadOnly,
+        ReadWrite,
+        None
+    };
+
+    public enum ExtentType {
+        Sparse,
+        Flat
+    };
 }

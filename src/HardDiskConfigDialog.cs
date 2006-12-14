@@ -37,6 +37,10 @@ namespace VmxManager {
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "diskConfigContent");
             xml.Autoconnect (this);
 
+            busTypeCombo.Changed += delegate {
+                PopulateDeviceNumberCombo ();
+            };
+            
             VBox.Add (diskConfigContent);
             diskConfigContent.ShowAll ();
 
@@ -50,9 +54,32 @@ namespace VmxManager {
                 this.Destroy ();
             };
 
-            allocateDiskCheck.Sensitive = capacitySensitive && VirtualHardDisk.SupportedTypes.Contains (HardDiskType.SplitFlat);
+            allocateDiskCheck.Sensitive = capacitySensitive;
 
             Load ();
+        }
+
+        private void PopulateDeviceNumberCombo () {
+            int current = deviceNumberCombo.Active;
+            
+            for (int i = 0; i < 7; i++) {
+                deviceNumberCombo.RemoveText (0);
+            }
+
+            int max = 2;
+            if (busTypeCombo.Active == 1) {
+                max = 7;
+            }
+
+            for (int i = 0; i < max; i++) {
+                deviceNumberCombo.AppendText (i.ToString ());
+            }
+
+            if (current < max) {
+                deviceNumberCombo.Active = current;
+            } else {
+                deviceNumberCombo.Active = max - 1;
+            }
         }
 
         private void Load () {
@@ -65,6 +92,11 @@ namespace VmxManager {
             busNumberCombo.Active = disk.BusNumber;
             deviceNumberCombo.Active = disk.DeviceNumber;
             diskSizeSpin.Value = (double) disk.Capacity / (double) 1024 / (double) 1024 / (double) 1024;
+
+            if (disk.HardDiskType == HardDiskType.SingleFlat ||
+                disk.HardDiskType == HardDiskType.SplitFlat) {
+                allocateDiskCheck.Active = true;
+            }
         }
 
         private void Save () {
@@ -84,7 +116,7 @@ namespace VmxManager {
             if (allocateDiskCheck.Sensitive && allocateDiskCheck.Active) {
                 disk.HardDiskType = HardDiskType.SplitFlat;
             } else {
-                disk.HardDiskType = HardDiskType.SingleSparse;
+                disk.HardDiskType = HardDiskType.SplitSparse;
             }
         }
     }

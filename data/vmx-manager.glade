@@ -1587,8 +1587,7 @@ SCSI</property>
 	      <child>
 		<widget class="GtkComboBox" id="deviceNumberCombo">
 		  <property name="visible">True</property>
-		  <property name="items" translatable="yes">0
-1
+		  <property name="items" translatable="yes">
 </property>
 		  <property name="add_tearoffs">False</property>
 		  <property name="focus_on_click">True</property>
@@ -1639,7 +1638,7 @@ SCSI</property>
 	    <widget class="GtkCheckButton" id="allocateDiskCheck">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Allocate disk usage now</property>
+	      <property name="label" translatable="yes">Allocate entire disk in advance</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
@@ -2022,8 +2021,7 @@ SCSI</property>
 	      <child>
 		<widget class="GtkComboBox" id="deviceNumberCombo">
 		  <property name="visible">True</property>
-		  <property name="items" translatable="yes">0
-1
+		  <property name="items" translatable="yes">
 </property>
 		  <property name="add_tearoffs">False</property>
 		  <property name="focus_on_click">True</property>

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using Gtk;
 using Mono.Unix;
 
@@ -181,7 +182,25 @@ namespace VmxManager {
             foreach (VirtualHardDisk hd in machine.HardDisks) {
                 if (hd.FileName == null) {
                     hd.FileName = GetNewDiskPath (vmdir);
-                    hd.Create ();
+
+                    if (hd.BusType == DiskBusType.Scsi) {
+                        hd.ScsiDeviceType = machine.OperatingSystem.SuggestedScsiDeviceType;
+                    }
+
+                    if (hd.HardDiskType == HardDiskType.SingleFlat ||
+                        hd.HardDiskType == HardDiskType.SplitFlat) {
+                        DiskProgressDialog dialog = new DiskProgressDialog (this);
+
+                        ThreadPool.QueueUserWorkItem (delegate {
+                            hd.Create (delegate (object o, ProgressArgs args) {
+                                dialog.Progress = args.Progress;
+                            });
+                        });
+                        
+                        dialog.Run ();
+                    } else {
+                        hd.Create ();
+                    }
                 }
             }
 
@@ -221,7 +240,7 @@ namespace VmxManager {
         }
 
         private void OnAddCdDrive (object o, EventArgs args) {
-            VirtualCdDrive drive = new VirtualCdDrive ("/dev/hdc", 0, 1, DiskBusType.Ide, CdDeviceType.Raw);
+            VirtualCdDrive drive = new VirtualCdDrive ("/dev/hdc", 1, 0, DiskBusType.Ide, CdDeviceType.Raw);
 
             CdConfigDialog dialog = new CdConfigDialog (drive, this);
             dialog.Response += delegate (object b, ResponseArgs rargs) {

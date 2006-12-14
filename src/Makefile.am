@@ -12,6 +12,7 @@ VMXMAN_SOURCE =				\
 	ConfigDialog.cs			\
 	DeviceModel.cs			\
 	DeviceView.cs			\
+	DiskProgressDialog.cs		\
 	EntryPoint.cs			\
 	Enums.cs			\
 	EthernetConfigDialog.cs		\
