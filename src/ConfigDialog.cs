@@ -15,6 +15,8 @@ namespace VmxManager {
         private ActionGroup actions;
         private UIManager ui;
 
+        private Window parentWindow;
+
         [Glade.Widget]
         private Widget configDialogContent;
 
@@ -45,10 +47,15 @@ namespace VmxManager {
         [Glade.Widget]
         private Button configureDeviceButton;
 
+        public VirtualMachine Machine {
+            get { return machine; }
+        }
+
         public ConfigDialog (VirtualMachine machine, Window parent) :
             base ("Configure Virtual Machine", parent, DialogFlags.NoSeparator, Stock.Cancel, ResponseType.Cancel,
                   Stock.Ok, ResponseType.Ok) {
 
+            this.parentWindow = parent;
             this.machine = machine;
 
             IconThemeUtils.SetWindowIcon (this);
@@ -117,8 +124,6 @@ namespace VmxManager {
             VBox.Add (configDialogContent);
             DefaultHeight = 400;
 
-            Response += OnResponse;
-
             Load ();
         }
 
@@ -162,7 +167,7 @@ namespace VmxManager {
             }
         }
 
-        private bool Save () {
+        public bool Save () {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
             machine.SoundEnabled = soundToggle.Active;
@@ -189,7 +194,7 @@ namespace VmxManager {
 
                     if (hd.HardDiskType == HardDiskType.SingleFlat ||
                         hd.HardDiskType == HardDiskType.SplitFlat) {
-                        DiskProgressDialog dialog = new DiskProgressDialog (this);
+                        DiskProgressDialog dialog = new DiskProgressDialog (parentWindow);
 
                         ThreadPool.QueueUserWorkItem (delegate {
                             hd.Create (delegate (object o, ProgressArgs args) {
@@ -212,18 +217,6 @@ namespace VmxManager {
             }
 
             return true;
-        }
-
-        private void OnResponse (object o, ResponseArgs args) {
-            bool destroy = true;
-            
-            if (args.ResponseId == ResponseType.Ok) {
-                destroy = Save ();
-            }
-
-            if (destroy) {
-                Destroy ();
-            }
         }
 
         private void OnAddHardDisk (object o, EventArgs args) {

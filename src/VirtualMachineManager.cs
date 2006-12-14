@@ -66,6 +66,9 @@ namespace VmxManager {
             machine.FileNameChanged += delegate {
                 SaveMachines ();
             };
+
+            // UGH: fake a name change in case it changed between now and when it was created
+            OnMachineNameChanged (machine, new EventArgs ());
             
             SaveMachines ();
 
