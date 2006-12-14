@@ -14,6 +14,9 @@ namespace VmxManager {
         [Glade.Widget]
         private ComboBox ethernetTypeCombo;
 
+        [Glade.Widget]
+        private Label ethernetTypeLabel;
+
         public EthernetConfigDialog (VirtualEthernet device, Window parent) : base (Catalog.GetString ("Configure Ethernet"),
                                                                                   parent, DialogFlags.NoSeparator,
                                                                                   Stock.Cancel, ResponseType.Cancel,
@@ -36,7 +39,26 @@ namespace VmxManager {
                 this.Destroy ();
             };
 
+            ethernetTypeCombo.Changed += OnComboChanged;
+
             Load ();
+        }
+
+        private void OnComboChanged (object o, EventArgs args) {
+            switch (ethernetTypeCombo.Active) {
+            case 0:
+                // bridged
+                ethernetTypeLabel.Text = Catalog.GetString ("With a bridged configuration, the ethernet card will be connected to the same network as the host computer.");
+                break;
+            case 1:
+                // host only
+                ethernetTypeLabel.Text = Catalog.GetString ("With this configuration, the ethernet card will be on a private network used only by the host computer and the virtual machine.");
+                break;
+            case 2:
+                // nat
+                ethernetTypeLabel.Text = Catalog.GetString ("With this configuration, the virtual machine will connect to the host's network through NAT (Network Address Translation)");
+                break;
+            }
         }
 
         private void Load () {
