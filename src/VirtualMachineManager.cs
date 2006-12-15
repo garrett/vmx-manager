@@ -38,8 +38,7 @@ namespace VmxManager {
                 while ((line = reader.ReadLine ()) != null) {
                     try {
                         VirtualMachine machine = new VirtualMachine (line);
-                        machines.Add (machine);
-                        CreateDesktopFile (machine);
+                        AddMachineInternal (machine);
                     } catch (Exception e) {
                         File.Delete (GetDesktopFileName (line));
                         Console.Error.WriteLine ("Failed to load virtual machine '{0}': {1}", line, e);
@@ -67,17 +66,8 @@ namespace VmxManager {
                     return;
                 }
             }
-            
-            machines.Add (machine);
-            machine.NameChanged += OnMachineNameChanged;
-            machine.FileNameChanged += delegate {
-                SaveMachines ();
-            };
 
-            CreateDesktopFile (machine);
-
-            // UGH: fake a name change in case it changed between now and when it was created
-            OnMachineNameChanged (machine, new EventArgs ());
+            AddMachineInternal (machine);
             
             SaveMachines ();
 
@@ -85,6 +75,17 @@ namespace VmxManager {
             if (handler != null) {
                 handler (this, new VirtualMachineArgs (machine));
             }
+        }
+
+        private void AddMachineInternal (VirtualMachine machine) {
+            machines.Add (machine);
+            machine.NameChanged += OnMachineNameChanged;
+            machine.FileNameChanged += delegate {
+                SaveMachines ();
+            };
+
+            // UGH: fake a name change in case it changed between now and when it was created
+            OnMachineNameChanged (machine, new EventArgs ());
         }
 
         private string CreateMachinePath (string name) {
@@ -98,6 +99,8 @@ namespace VmxManager {
                 // machine has not been saved for the first time yet, we'll fix up the path
                 machine.FileName = CreateMachinePath (machine.Name);
             }
+
+            CreateDesktopFile (machine, true);
         }
 
         public void RemoveMachine (VirtualMachine machine) {
@@ -234,15 +237,20 @@ namespace VmxManager {
         }
 
         private string CreateDesktopFile (VirtualMachine machine) {
+            return CreateDesktopFile (machine, false);
+        }
+
+        private string CreateDesktopFile (VirtualMachine machine, bool overwrite) {
             string file = GetDesktopFileName (machine);
-            if (File.Exists (file)) {
+            if (!overwrite && File.Exists (file)) {
                 return file;
             }
 
             StringBuilder builder = new StringBuilder ();
             builder.Append ("[Desktop Entry]\nVersion=1.0\nEncoding=UTF-8\n");
             builder.AppendFormat ("Name={0}\n", machine.Name);
-            builder.Append ("GenericName=Virtual machine shortcut\n");
+            builder.Append (String.Format ("GenericName={0}\n",
+                                           Catalog.GetString ("VMware Virtual Machine Launcher")));
             builder.AppendFormat ("Exec=vmplayer \"{0}\"\n", machine.FileName);
             builder.Append ("Icon=vmx-manager\nStartupNotify=true\nTerminal=false\n");
             builder.Append ("Type=Application");
