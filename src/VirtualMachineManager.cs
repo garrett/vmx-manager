@@ -1,7 +1,10 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using Mono.Unix;
 
 namespace VmxManager {
 
@@ -9,9 +12,11 @@ namespace VmxManager {
 
         private static readonly string MachineDirectory = Path.Combine (Environment.GetEnvironmentVariable ("HOME"),
                                                                         "vmware");
-
+        private static readonly string ConfigDirectory = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "vmx-manager");
+        private static readonly string ConfigFile = Path.Combine (ConfigDirectory, "machines");
+        private static readonly string DesktopFileDirectory = Path.Combine (ConfigDirectory, "launchers");
+        
         private List<VirtualMachine> machines = new List<VirtualMachine> ();
-        private string configFile = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData) + "/vmx-manager/machines";
 
         public event VirtualMachineHandler Added;
         public event VirtualMachineHandler Removed;
@@ -21,20 +26,19 @@ namespace VmxManager {
         }
         
         public VirtualMachineManager () {
-            try {
-                LoadMachines ();
-            } catch (FileNotFoundException) {
-            } catch (DirectoryNotFoundException) {
-            }
+            LoadMachines ();
         }
 
         private void LoadMachines () {
-            using (StreamReader reader = new StreamReader (File.OpenRead (configFile))) {
+            using (StreamReader reader = new StreamReader (File.OpenRead (ConfigFile))) {
                 string line;
                 while ((line = reader.ReadLine ()) != null) {
                     try {
-                        machines.Add (new VirtualMachine (line));
+                        VirtualMachine machine = new VirtualMachine (line);
+                        machines.Add (machine);
+                        CreateDesktopFile (machine);
                     } catch (Exception e) {
+                        File.Delete (GetDesktopFileName (line));
                         Console.Error.WriteLine ("Failed to load virtual machine '{0}': {1}", line, e);
                     }
                 }
@@ -42,12 +46,12 @@ namespace VmxManager {
         }
 
         private void SaveMachines () {
-            string configDir = Path.GetDirectoryName (configFile);
+            string configDir = Path.GetDirectoryName (ConfigFile);
             if (!Directory.Exists (configDir)) {
                 Directory.CreateDirectory (configDir);
             }
             
-            using (StreamWriter writer = new StreamWriter (File.Open (configFile, FileMode.Create))) {
+            using (StreamWriter writer = new StreamWriter (File.Open (ConfigFile, FileMode.Create))) {
                 foreach (VirtualMachine machine in machines) {
                     writer.WriteLine (machine.FileName);
                 }
@@ -66,6 +70,8 @@ namespace VmxManager {
             machine.FileNameChanged += delegate {
                 SaveMachines ();
             };
+
+            CreateDesktopFile (machine);
 
             // UGH: fake a name change in case it changed between now and when it was created
             OnMachineNameChanged (machine, new EventArgs ());
@@ -94,6 +100,8 @@ namespace VmxManager {
         public void RemoveMachine (VirtualMachine machine) {
             machines.Remove (machine);
             SaveMachines ();
+
+            DeleteDesktopFile (machine);
 
             VirtualMachineHandler handler = Removed;
             if (handler != null) {
@@ -140,6 +148,65 @@ namespace VmxManager {
             }
 
             return null;
+        }
+
+        [DllImport ("libgnome-desktop-2.so.2")]
+        private static extern IntPtr gnome_desktop_item_new_from_file (string file, int flags, IntPtr error);
+
+        [DllImport ("libgnome-desktop-2.so.2")]
+        private static extern int gnome_desktop_item_launch (IntPtr item, IntPtr args, int flags, IntPtr error);
+
+        public void StartMachine (VirtualMachine machine) {
+            if (machine.IsRunning) {
+                return;
+            }
+            
+            IntPtr ditem = gnome_desktop_item_new_from_file (GetDesktopFileName (machine), 0, IntPtr.Zero);
+            if (ditem == IntPtr.Zero) {
+                throw new ApplicationException (Catalog.GetString ("Failed to load launcher"));
+            }
+
+            gnome_desktop_item_launch (ditem, IntPtr.Zero, 0, IntPtr.Zero);
+        }
+
+        private string GetDesktopFileName (string machineFileName) {
+            return Path.Combine (DesktopFileDirectory, machineFileName.GetHashCode () + ".desktop");
+        }
+
+        public string GetDesktopFileName (VirtualMachine machine) {
+            return GetDesktopFileName (machine.FileName);
+        }
+
+        private void DeleteDesktopFile (VirtualMachine machine) {
+            string file = GetDesktopFileName (machine);
+            if (File.Exists (file)) {
+                File.Delete (file);
+            }
+        }
+
+        private string CreateDesktopFile (VirtualMachine machine) {
+            string file = GetDesktopFileName (machine);
+            if (File.Exists (file)) {
+                return file;
+            }
+
+            StringBuilder builder = new StringBuilder ();
+            builder.Append ("[Desktop Entry]\nVersion=1.0\nEncoding=UTF-8\n");
+            builder.AppendFormat ("Name={0}\n", machine.Name);
+            builder.Append ("GenericName=Virtual machine shortcut\n");
+            builder.AppendFormat ("Exec=vmplayer \"{0}\"\n", machine.FileName);
+            builder.Append ("Icon=vmx-manager\nStartupNotify=true\nTerminal=false\n");
+            builder.Append ("Type=Application");
+
+            if (!Directory.Exists (DesktopFileDirectory)) {
+                Directory.CreateDirectory (DesktopFileDirectory);
+            }
+            
+            using (StreamWriter writer = new StreamWriter (File.Open (file, FileMode.Create))) {
+                writer.Write (builder.ToString ());
+            }
+
+            return file;
         }
     }
 }

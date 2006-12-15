@@ -464,14 +464,6 @@ namespace VmxManager {
             }
         }
 
-        public void Start () {
-            if (IsRunning) {
-                return;
-            }
-
-            Process.Start (String.Format ("vmplayer \"{0}\"", file));
-        }
-
         public void Delete () {
             foreach (VirtualHardDisk disk in hardDisks) {
                 disk.Delete ();

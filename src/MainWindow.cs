@@ -62,7 +62,7 @@ namespace VmxManager {
             manager = new VirtualMachineManager ();
             controller = new MainController ();
             controller.MainWindow = this;
-            controller.VmxManagerager = manager;
+            controller.Manager = manager;
             
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "mainContent");
             xml.Autoconnect (this);

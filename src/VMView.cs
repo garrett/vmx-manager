@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Text;
 using Gtk;
 
 namespace VmxManager {
@@ -15,6 +18,52 @@ namespace VmxManager {
 
             cellLayoutFunc = new CellLayoutDataFunc (OnCellLayout);
             AppendColumn ("machines", new CellRendererText (), cellLayoutFunc);
+
+            EnableModelDragDest (new TargetEntry[] { new TargetEntry ("text/uri-list", 0, 0) },
+                                 Gdk.DragAction.Copy | Gdk.DragAction.Default);
+            EnableModelDragSource (Gdk.ModifierType.Button1Mask,
+                                   new TargetEntry[] { new TargetEntry ("text/uri-list", 0, 0) },
+                                   Gdk.DragAction.Copy | Gdk.DragAction.Default);
+                                   
+
+            this.DragDataGet += OnDragDataGet;
+            this.DragDataReceived += OnDragDataReceived;
+        }
+
+        private void OnDragDataGet (object o, DragDataGetArgs args) {
+                
+            if (args.SelectionData.Target != "text/uri-list")
+                return;
+
+            VirtualMachine machine = GetSelectedMachine ();
+
+            args.SelectionData.Set (Gdk.Atom.Intern ("text/uri-list", false),
+                                    8, Encoding.UTF8.GetBytes (controller.Manager.GetDesktopFileName (machine)));
+        }
+
+        private void OnDragDataReceived (object sender, DragDataReceivedArgs args) {
+            if (args.SelectionData.Length > 0 && args.SelectionData.Format == 8) {
+                string uris = Encoding.ASCII.GetString (args.SelectionData.Data, 0, args.SelectionData.Length);
+
+                foreach (string str in uris.Trim ().Split ('\n')) {
+                    string uristr = str.Trim (); // remove the '\r'
+                    
+                    if (uristr == String.Empty)
+                        continue;
+                    
+                    Uri uri = new Uri (uristr);
+                    if (!uri.IsFile) {
+                        continue;
+                    }
+
+                    try {
+                        VirtualMachine machine = new VirtualMachine (uri.LocalPath);
+                        controller.Manager.AddMachine (machine);
+                    } catch (Exception e) {
+                        Console.Error.WriteLine ("Could not load virtual machine: " + e);
+                    }
+                }
+            }
         }
 
         public VirtualMachine GetSelectedMachine () {
@@ -28,16 +77,6 @@ namespace VmxManager {
 
         protected override void OnRowActivated (TreePath path, TreeViewColumn column) {
             controller.OnStart (this, new EventArgs ());
-            /*
-            TreeIter iter;
-            Model.GetIter (out iter, path);
-
-            VirtualMachine machine = (VirtualMachine) Model.GetValue (iter, 0);
-            if (!machine.IsRunning) {
-                Console.WriteLine ("Starting machine: "+ machine.Name);
-                machine.Start ();
-            }
-            */
         }
 
         private void OnCellLayout (CellLayout layout, CellRenderer cell,

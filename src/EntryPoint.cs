@@ -9,6 +9,8 @@ namespace VmxManager {
         
         public static int Main (string[] args) {
 
+            Gnome.Vfs.Vfs.Initialize ();
+
             if (args.Length == 0) {
                 RunGUI ();
                 return 0;
@@ -33,7 +35,7 @@ namespace VmxManager {
                 }
                 
                 machine = CreateFromIso (manager, args);
-                machine.Start ();
+                manager.StartMachine (machine);
                 break;
             case "--create-blank":
                 if (args.Length < 2) {

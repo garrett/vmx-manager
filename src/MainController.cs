@@ -20,7 +20,7 @@ namespace VmxManager {
             set { vmview = value; }
         }
 
-        public VirtualMachineManager VmxManagerager {
+        public VirtualMachineManager Manager {
             get { return manager; }
             set { manager = value; }
         }
@@ -35,8 +35,7 @@ namespace VmxManager {
                 
                 VirtualMachine machine = (VirtualMachine) vmview.Model.GetValue (iter, 0);
                 if (!machine.IsRunning) {
-                    Console.WriteLine ("Starting machine: "+ machine.Name);
-                    machine.Start ();
+                    manager.StartMachine (machine);
                 }
             }
         }
