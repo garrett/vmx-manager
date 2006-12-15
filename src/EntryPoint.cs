@@ -9,6 +9,7 @@ namespace VmxManager {
         
         public static int Main (string[] args) {
 
+            // for some reason the ditem stuff needs this
             Gnome.Vfs.Vfs.Initialize ();
 
             if (args.Length == 0) {
@@ -49,14 +50,6 @@ namespace VmxManager {
                 Usage ();
                 break;
             }
-
-            /*
-            VirtualHardDisk disk = new VirtualHardDisk ("foobar.vmdk", 0, 0, DiskBusType.Scsi);
-            disk.HardDiskType = HardDiskType.SplitSparse;
-            disk.Capacity = (long) 6 * 1024 * 1024 * 1024;
-            disk.Create ();
-            */
-
 
             return 0;
         }
