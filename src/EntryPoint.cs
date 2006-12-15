@@ -72,7 +72,7 @@ namespace VmxManager {
         }
 
         private static void Usage () {
-            Console.WriteLine ("Usage: vmman [options]");
+            Console.WriteLine ("Usage: vmx-manager [options]");
             Console.WriteLine ();
             Console.WriteLine ("Options:");
             Console.WriteLine ("  --create-from-iso <iso> [name]    Create a machine from a bootable ISO");
