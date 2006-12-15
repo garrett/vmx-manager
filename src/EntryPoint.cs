@@ -44,7 +44,9 @@ namespace VmxManager {
                     return 1;
                 }
 
-                manager.CreateMachine (args[1]);
+                machine = manager.CreateMachine (args[1]);
+                machine.Save ();
+                manager.AddMachine (machine);
                 break;
             default:
                 Usage ();
@@ -62,7 +64,11 @@ namespace VmxManager {
                 name = args[2];
             }
 
-            return manager.CreateMachineFromIso (iso, name);
+            VirtualMachine machine = manager.CreateMachineFromIso (name, iso);
+            machine.Save ();
+            manager.AddMachine (machine);
+
+            return machine;
         }
 
         private static void Usage () {

@@ -20,13 +20,13 @@ namespace VmxManager {
             }
         }
 
-        public DiskProgressDialog (Window parent) : base (Catalog.GetString ("Creating Hard Disk..."), parent,
+        public DiskProgressDialog (Window parent) : base (Catalog.GetString ("Creating Hard Disks..."), parent,
                                                           DialogFlags.Modal | DialogFlags.NoSeparator) {
 
             VBox box = new VBox (false, 6);
             box.BorderWidth = 6;
 
-            Label label = new Label (Catalog.GetString ("<b>Creating hard disk, please wait...</b>"));
+            Label label = new Label (Catalog.GetString ("<b>Creating hard disks, please wait...</b>"));
             label.UseMarkup = true;
             box.Add (label);
 
