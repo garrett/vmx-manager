@@ -40,7 +40,7 @@ namespace VmxManager {
         [Glade.Widget]
         private Button addExistingButton;
 
-        private Viewport placeholder;
+        private Viewport noMachinesWidget;
 
         private VirtualMachineManager manager;
         private VMView vmview;
@@ -67,14 +67,14 @@ namespace VmxManager {
             Glade.XML xml = new Glade.XML ("vmx-manager.glade", "mainContent");
             xml.Autoconnect (this);
 
-            placeholder = new Viewport ();
-            placeholder.ShadowType = ShadowType.None;
+            noMachinesWidget = new Viewport ();
+            noMachinesWidget.ShadowType = ShadowType.None;
             MessagePane pane = new MessagePane ();
             pane.HeaderIcon = IconThemeUtils.LoadIcon (48, "face-surprise", Stock.DialogInfo);
             pane.HeaderMarkup = Catalog.GetString ("<b>There are currently no virtual machines.</b>");
             pane.Append (Catalog.GetString ("You can add or create a new virtual machine using the buttons on the left"), false);
             pane.Show ();
-            placeholder.Add (pane);
+            noMachinesWidget.Add (pane);
             
             vmview = new VMView (controller);
             controller.VMView = vmview;
@@ -210,23 +210,39 @@ namespace VmxManager {
             return false;
         }
 
+        public void SetContent (Widget widget) {
+            SetContentInternal (widget);
+            SetActionsSensitive ();
+        }
+
+        public void SetContentInternal (Widget widget) {
+            if (widget == null) {
+                widget = vmview;
+            }
+            
+            if (treeContent.Child != null) {
+                treeContent.Remove (treeContent.Child);
+            }
+            
+            treeContent.Add (widget);
+            vmview.Show ();
+        }
+
         private void SetActionsSensitive () {
             bool machineSelected = vmview.Selection.CountSelectedRows () > 0;
 
             configureButton.Sensitive = removeButton.Sensitive = actions.GetAction ("Configure").Sensitive =
-                actions.GetAction ("Remove").Sensitive = machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+                actions.GetAction ("Remove").Sensitive = vmview.IsMapped && machineSelected && !vmview.GetSelectedMachine ().IsRunning;
 
             startButton.Sensitive = actions.GetAction ("Start").Sensitive = configureButton.Sensitive && havePlayer;
 
             int count = manager.Machines.Count;
-            if (count > 0 && placeholder.Parent != null) {
-                treeContent.Remove (placeholder);
-                treeContent.Add  (vmview);
+            if (count > 0 && noMachinesWidget.Parent != null) {
+                SetContent (vmview);
                 vmview.Show ();
             } else if (count == 0 && vmview.Parent != null) {
-                treeContent.Remove (vmview);
-                treeContent.Add (placeholder);
-                placeholder.Show ();
+                SetContent (noMachinesWidget);
+                noMachinesWidget.Show ();
             }
         }
 

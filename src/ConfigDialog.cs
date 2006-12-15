@@ -14,7 +14,7 @@ namespace VmxManager {
         private ActionGroup actions;
         private UIManager ui;
 
-        private Window parentWindow;
+        private MainWindow mainWindow;
 
         [Glade.Widget]
         private Widget configDialogContent;
@@ -50,11 +50,11 @@ namespace VmxManager {
             get { return machine; }
         }
 
-        public ConfigDialog (VirtualMachine machine, Window parent) :
+        public ConfigDialog (VirtualMachine machine, MainWindow parent) :
             base ("Configure Virtual Machine", parent, DialogFlags.NoSeparator, Stock.Cancel, ResponseType.Cancel,
                   Stock.Ok, ResponseType.Ok) {
 
-            this.parentWindow = parent;
+            this.mainWindow = parent;
             this.machine = machine;
 
             IconThemeUtils.SetWindowIcon (this);
@@ -192,17 +192,18 @@ namespace VmxManager {
         }
 
         private bool SaveMachine (bool showProgress) {
-            DiskProgressDialog dialog = null;
+            DiskProgressPane pane = null;
             ProgressHandler handler = null;
             
             if (showProgress) {
-                dialog = new DiskProgressDialog (parentWindow);
+                pane = new DiskProgressPane ();
 
                 handler = delegate (object o, ProgressArgs args) {
-                    dialog.Progress = args.Progress;
+                    pane.Progress = args.Progress;
                 };
 
-                dialog.Show ();
+                mainWindow.SetContent (pane);
+                pane.Show ();
             }
 
             try {
@@ -211,10 +212,10 @@ namespace VmxManager {
                 Console.Error.WriteLine ("Failed to save machine: " + e);
                 Utility.ShowError (Catalog.GetString ("Could not save changes"), e.Message);
                 return false;
-            }
-
-            if (dialog != null) {
-                dialog.Destroy ();
+            } finally {
+                if (pane != null) {
+                    mainWindow.SetContent (null);
+                }
             }
 
             return true;

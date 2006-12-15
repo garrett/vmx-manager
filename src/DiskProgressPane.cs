@@ -4,11 +4,13 @@ using Gtk;
 
 namespace VmxManager {
 
-    public class DiskProgressDialog : Dialog {
+    public class DiskProgressPane : Viewport {
 
         private ProgressBar progressBar;
         private double progress;
         private uint source;
+
+        private MessagePane pane;
 
         public double Progress {
             get { return progress; }
@@ -20,21 +22,20 @@ namespace VmxManager {
             }
         }
 
-        public DiskProgressDialog (Window parent) : base (Catalog.GetString ("Creating Hard Disks..."), parent,
-                                                          DialogFlags.Modal | DialogFlags.NoSeparator) {
+        public DiskProgressPane () : base () {
+            this.ShadowType = ShadowType.None;
 
-            VBox box = new VBox (false, 6);
-            box.BorderWidth = 6;
-
-            Label label = new Label (Catalog.GetString ("<b>Creating hard disks, please wait...</b>"));
-            label.UseMarkup = true;
-            box.Add (label);
+            pane = new MessagePane ();
+            pane.HeaderIconStock = Stock.DialogInfo;
+            pane.HeaderMarkup = Catalog.GetString ("<b>Creating Hard Disks</b>");
+            pane.Append (Catalog.GetString ("Creating the hard disk(s) may take several minutes, depending on their size."), false);
 
             progressBar = new ProgressBar ();
-            box.Add (progressBar);
+            pane.Append (progressBar, AttachOptions.Expand | AttachOptions.Fill, 0, false);
+            progressBar.Show ();
 
-            box.ShowAll ();
-            VBox.Add (box);
+            Add (pane);
+            pane.Show ();
         }
 
         private bool OnTimeout () {
