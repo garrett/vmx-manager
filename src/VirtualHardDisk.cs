@@ -363,7 +363,6 @@ namespace VmxManager {
                     writer.Write (line + "\n");
                 }
 
-                // FIXME: need to support the various scsi adapter types
                 writer.Write ("\n#The Disk Data Base\n#DDB\n");
                 writer.Write ("ddb.virtualHWVersion = \"3\"\n");
 
@@ -371,7 +370,6 @@ namespace VmxManager {
                 
                 if (busType == DiskBusType.Ide) {
                     adapter = "ide";
-                    writer.Write ("ddb.adapterType = \"ide\"\n");
                 } else if (scsiType == ScsiDeviceType.Buslogic) {
                     adapter = "buslogic";
                 } else {
@@ -403,10 +401,14 @@ namespace VmxManager {
 
         public void Delete () {
             foreach (HardDiskExtent extent in extents) {
-                File.Delete (extent.FileName);
+                if (extent.FileName != null && File.Exists (extent.FileName)) {
+                    File.Delete (extent.FileName);
+                }
             }
-            
-            File.Delete (file);
+
+            if (file != null && File.Exists (file)) {
+                File.Delete (file);
+            }
         }
 
         public void Create () {

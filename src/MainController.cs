@@ -99,6 +99,23 @@ namespace VmxManager {
 
                 if (manager.GetMachine (name) == null && manager.GetMachineByFileName (name) == null) {
                     VirtualMachine machine = manager.CreateMachine (name);
+
+                    // add a default 6gb disk
+                    VirtualHardDisk disk = new VirtualHardDisk (0, 0, DiskBusType.Ide, (long) 6 * 1024 * 1024 * 1024);
+                    disk.HardDiskType = HardDiskType.SplitSparse;
+                    machine.AddHardDisk (disk);
+
+                    // add virtual cd devices for each physical one (up to two)
+                    ushort numdevs = 0;
+                    foreach (string dev in Utility.FindCdDrives ()) {
+                        if (numdevs > 1)
+                            break;
+                        
+                        VirtualCdDrive drive = new VirtualCdDrive (dev, 1, numdevs++, DiskBusType.Ide,
+                                                                   CdDeviceType.Raw);
+                        machine.AddCdDrive (drive);
+                    }
+                    
                     ConfigDialog dialog = new ConfigDialog (machine, window);
                     dialog.Response += delegate (object d, ResponseArgs respargs) {
                         dialog.Hide ();

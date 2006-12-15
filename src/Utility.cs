@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using Mono.Unix;
 using Mono.Unix.Native;
 using Gtk;
@@ -344,6 +345,17 @@ namespace VmxManager {
                     }
                 }
             }
+        }
+
+        public static List<string> FindCdDrives () {
+            Hal.Manager hal = new Hal.Manager ();
+
+            List<string> devices = new List<string> ();
+            foreach (Hal.Device dev in hal.FindDeviceByCapabilityAsDevice ("storage.cdrom")) {
+                devices.Add (dev.GetPropertyString ("block.device"));
+            }
+
+            return devices;
         }
     }
 }

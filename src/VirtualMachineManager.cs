@@ -26,7 +26,10 @@ namespace VmxManager {
         }
         
         public VirtualMachineManager () {
-            LoadMachines ();
+            try {
+                LoadMachines ();
+            } catch {
+            }
         }
 
         private void LoadMachines () {

@@ -268,19 +268,23 @@ namespace VmxManager {
             case VirtualDeviceType.HardDisk:
                 VirtualHardDisk disk = device as VirtualHardDisk;
 
-                HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Question,
-                                                                ButtonsType.None,
-                                                                Catalog.GetString ("Would you like to delete the disk files, or keep them?"),
-                                                                Catalog.GetString ("If you delete them, all data on the disk will be lost."));
-                dialog.AddButton (Catalog.GetString ("Keep"), ResponseType.No, true);
-                dialog.AddButton (Stock.Delete, ResponseType.Yes, false);
+                if (disk.FileName != null && File.Exists (disk.FileName)) {
+                    HigMessageDialog dialog = new HigMessageDialog (this, DialogFlags.Modal, MessageType.Question,
+                                                                    ButtonsType.None,
+                                                                    Catalog.GetString ("Would you like to delete the disk files, or keep them?"),
+                                                                    Catalog.GetString ("If you delete them, all data on the disk will be lost."));
+                    dialog.AddButton (Catalog.GetString ("Keep"), ResponseType.No, true);
+                    dialog.AddButton (Stock.Delete, ResponseType.Yes, false);
+                    
+                    int response = dialog.Run ();
+                    dialog.Destroy ();
                 
-                int response = dialog.Run ();
-                dialog.Destroy ();
-                
-                machine.RemoveHardDisk (disk);
-                if (response == (int) ResponseType.Yes) {
-                    disk.Delete ();
+                    machine.RemoveHardDisk (disk);
+                    if (response == (int) ResponseType.Yes) {
+                        disk.Delete ();
+                    }
+                } else {
+                    machine.RemoveHardDisk (disk);
                 }
                 break;
             case VirtualDeviceType.CdRom:
