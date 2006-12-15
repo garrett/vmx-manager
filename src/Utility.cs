@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Mono.Unix;
 using Mono.Unix.Native;
 using Gtk;
@@ -356,6 +357,21 @@ namespace VmxManager {
             }
 
             return devices;
+        }
+
+        public static int GetHostMemorySize () {
+            Regex regex = new Regex ("MemTotal:.*?([0-9]+).*kB");
+            using (StreamReader reader = new StreamReader (File.OpenRead ("/proc/meminfo"))) {
+                string line;
+                while ((line = reader.ReadLine ()) != null) {
+                    Match match = regex.Match (line);
+                    if (match.Success) {
+                        return Int32.Parse (match.Groups[1].ToString ()) / 1024;
+                    }
+                }
+            }
+
+            return 0;
         }
     }
 }

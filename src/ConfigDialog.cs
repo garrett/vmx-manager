@@ -124,6 +124,11 @@ namespace VmxManager {
             VBox.Add (configDialogContent);
             DefaultHeight = 400;
 
+            int maxmem = Utility.GetHostMemorySize ();
+            if (maxmem > 0) {
+                memorySpin.SetRange (1.0, (double) (maxmem - 128));
+            }
+
             Load ();
         }
 
@@ -305,7 +310,10 @@ namespace VmxManager {
             
             switch (dev.DeviceType) {
             case VirtualDeviceType.HardDisk:
-                dialog = new HardDiskConfigDialog ((VirtualHardDisk) dev, false, this);
+                VirtualHardDisk disk = (dev as VirtualHardDisk);
+                dialog = new HardDiskConfigDialog ((VirtualHardDisk) dev,
+                                                   disk.FileName == null || !File.Exists (disk.FileName),
+                                                   this);
                 break;
             case VirtualDeviceType.Ethernet:
                 dialog = new EthernetConfigDialog ((VirtualEthernet) dev, this);
