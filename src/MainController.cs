@@ -88,53 +88,24 @@ namespace VmxManager {
         }
 
         public void OnCreateBlank (object o, EventArgs args) {
-            for (int i = 0;; i++) {
-                string name;
-
-                if (i == 0) {
-                    name = Catalog.GetString ("New Virtual Machine");
-                } else {
-                    name = String.Format (Catalog.GetString ("New Virtual Machine #{0}"), i);
-                }
-
-                if (manager.GetMachine (name) == null && manager.GetMachineByFileName (name) == null) {
-                    VirtualMachine machine = manager.CreateMachine (name);
-
-                    // add a default 6gb disk
-                    VirtualHardDisk disk = new VirtualHardDisk (0, 0, DiskBusType.Ide, (long) 6 * 1024 * 1024 * 1024);
-                    disk.HardDiskType = HardDiskType.SplitSparse;
-                    machine.AddHardDisk (disk);
-
-                    // add virtual cd devices for each physical one (up to two)
-                    ushort numdevs = 0;
-                    foreach (string dev in Utility.FindCdDrives ()) {
-                        if (numdevs > 1)
-                            break;
-                        
-                        VirtualCdDrive drive = new VirtualCdDrive (dev, 1, numdevs++, DiskBusType.Ide,
-                                                                   CdDeviceType.Raw);
-                        machine.AddCdDrive (drive);
-                    }
+            VirtualMachine machine = manager.CreateDefaultMachine ();
                     
-                    ConfigDialog dialog = new ConfigDialog (machine, window);
-                    dialog.Response += delegate (object d, ResponseArgs respargs) {
-                        dialog.Hide ();
-
-                        bool saveResult = true;
-                        if (respargs.ResponseId == ResponseType.Ok) {
-                            manager.AddMachine (machine);
-                            saveResult = dialog.Save ();
-                        }
-
-                        if (saveResult) {
-                            dialog.Destroy ();
-                        }
-                    };
-
-                    dialog.Show ();
-                    break;
+            ConfigDialog dialog = new ConfigDialog (machine, window);
+            dialog.Response += delegate (object d, ResponseArgs respargs) {
+                dialog.Hide ();
+                
+                bool saveResult = true;
+                if (respargs.ResponseId == ResponseType.Ok) {
+                    manager.AddMachine (machine);
+                    saveResult = dialog.Save ();
                 }
-            }
+                
+                if (saveResult) {
+                    dialog.Destroy ();
+                }
+            };
+
+            dialog.Show ();
         }
         
         public void OnCreateFromIso (object o, EventArgs args) {
@@ -151,7 +122,9 @@ namespace VmxManager {
             dialog.AddFilter (filter);
             ResponseType result = (ResponseType) dialog.Run ();
             if (result == ResponseType.Ok) {
-                manager.CreateMachineFromIso (null, dialog.Filename);
+                VirtualMachine machine = manager.CreateMachineFromIso (null, dialog.Filename);
+                machine.Save ();
+                manager.AddMachine (machine);
             }
 
             dialog.Destroy ();

@@ -359,6 +359,10 @@ namespace VmxManager {
         }
 
         public void Save () {
+            Save (null);
+        }
+
+        public void Save (ProgressHandler handler) {
             CheckConflictingDisks ();
             
             string vmdir = Path.GetDirectoryName (file);
@@ -379,13 +383,22 @@ namespace VmxManager {
             }
 
             // save hard disks
-            foreach (VirtualDisk disk in hardDisks) {
-                SaveDisk (disk);
+            for (int i = 0; i < hardDisks.Count; i++) {
+                VirtualDisk disk = hardDisks[i];
+                if (handler != null) {
+                    SaveDisk (disk, delegate (object o, ProgressArgs args) {
+                        double progress = (double) i / (double) hardDisks.Count;
+                        progress += args.Progress * ((double) 1 / (double) hardDisks.Count);
+                        handler (this, new ProgressArgs (progress));
+                    });
+                } else {
+                    SaveDisk (disk, null);
+                }
             }
 
             // save cd drives
             foreach (VirtualDisk disk in cds) {
-                SaveDisk (disk);
+                SaveDisk (disk, handler);
             }
 
             // save ethernet devices
@@ -419,8 +432,34 @@ namespace VmxManager {
             CreateWatcher ();
         }
 
-        private void SaveDisk (VirtualDisk disk) {
+        private string GetNewDiskPath () {
+            string dir = Path.GetDirectoryName (file);
+            
+            for (int i = 0;; i++) {
+                string path = System.IO.Path.Combine (dir, String.Format ("disk{0}.vmdk", i));
+                if (!File.Exists (path)) {
+                    return path;
+                }
+            }
+        }
+
+        private void SaveDisk (VirtualDisk disk, ProgressHandler handler) {
+            if (disk.FileName == null && disk is VirtualHardDisk) {
+                disk.FileName = GetNewDiskPath ();
+            }
+
+            if (!File.Exists (disk.FileName) && disk is VirtualHardDisk) {
+                VirtualHardDisk hd = disk as VirtualHardDisk;
+                
+                if (hd.BusType == DiskBusType.Scsi) {
+                    hd.ScsiDeviceType = OperatingSystem.SuggestedScsiDeviceType;
+                }
+
+                hd.Create (handler);
+            }
+
             string diskFile = disk.FileName;
+            
             if (diskFile != null && diskFile != "auto detect" && Path.IsPathRooted (diskFile) &&
                 Path.GetDirectoryName (diskFile) == Path.GetDirectoryName (file)) {
                 diskFile = Path.GetFileName (diskFile);

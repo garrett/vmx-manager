@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading;
 using Gtk;
 using Mono.Unix;
 
@@ -163,15 +162,6 @@ namespace VmxManager {
             SetOsCombo ();
         }
 
-        private string GetNewDiskPath (string dir) {
-            for (int i = 0;; i++) {
-                string path = System.IO.Path.Combine (dir, String.Format ("disk{0}.vmdk", i));
-                if (!File.Exists (path)) {
-                    return path;
-                }
-            }
-        }
-
         public bool Save () {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
@@ -189,36 +179,42 @@ namespace VmxManager {
                 Directory.CreateDirectory (vmdir);
             }
 
+            bool haveFlat = false;
             foreach (VirtualHardDisk hd in machine.HardDisks) {
-                if (hd.FileName == null) {
-                    hd.FileName = GetNewDiskPath (vmdir);
-
-                    if (hd.BusType == DiskBusType.Scsi) {
-                        hd.ScsiDeviceType = machine.OperatingSystem.SuggestedScsiDeviceType;
-                    }
-
-                    if (hd.HardDiskType == HardDiskType.SingleFlat ||
-                        hd.HardDiskType == HardDiskType.SplitFlat) {
-                        DiskProgressDialog dialog = new DiskProgressDialog (parentWindow);
-
-                        ThreadPool.QueueUserWorkItem (delegate {
-                            hd.Create (delegate (object o, ProgressArgs args) {
-                                dialog.Progress = args.Progress;
-                            });
-                        });
-                        
-                        dialog.Run ();
-                    } else {
-                        hd.Create ();
-                    }
+                if (hd.HardDiskType == HardDiskType.SplitFlat ||
+                    hd.HardDiskType == HardDiskType.SingleFlat) {
+                    haveFlat = true;
+                    break;
                 }
             }
 
+            return SaveMachine (haveFlat);
+        }
+
+        private bool SaveMachine (bool showProgress) {
+            DiskProgressDialog dialog = null;
+            ProgressHandler handler = null;
+            
+            if (showProgress) {
+                dialog = new DiskProgressDialog (parentWindow);
+
+                handler = delegate (object o, ProgressArgs args) {
+                    dialog.Progress = args.Progress;
+                };
+
+                dialog.Show ();
+            }
+
             try {
-                machine.Save ();
+                machine.Save (handler);
             } catch (Exception e) {
+                Console.Error.WriteLine ("Failed to save machine: " + e);
                 Utility.ShowError (Catalog.GetString ("Could not save changes"), e.Message);
                 return false;
+            }
+
+            if (dialog != null) {
+                dialog.Destroy ();
             }
 
             return true;

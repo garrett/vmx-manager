@@ -344,6 +344,10 @@ namespace VmxManager {
                     if (handler != null) {
                         handler (null, new ProgressArgs (progress));
                     }
+
+                    while (Application.EventsPending ()) {
+                        Application.RunIteration ();
+                    }
                 }
             }
         }

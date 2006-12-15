@@ -116,14 +116,60 @@ namespace VmxManager {
             return VirtualMachine.Create (CreateMachinePath (name), name);
         }
 
+        public VirtualMachine CreateDefaultMachine () {
+            return CreateDefaultMachine (Catalog.GetString ("New Virtual Machine"));
+        }
+
+        public VirtualMachine CreateDefaultMachine (string baseName) {
+            for (int i = 0;; i++) {
+                string name;
+
+                if (i == 0) {
+                    name = baseName;
+                } else {
+                    name = String.Format (Catalog.GetString ("{0} #{1}"), baseName, i);
+                }
+
+                if (GetMachine (name) == null && GetMachineByFileName (name) == null) {
+                    VirtualMachine machine = CreateMachine (name);
+
+                    // add a default 6gb disk
+                    VirtualHardDisk disk = new VirtualHardDisk (0, 0, DiskBusType.Ide, (long) 6 * 1024 * 1024 * 1024);
+                    disk.HardDiskType = HardDiskType.SplitSparse;
+                    machine.AddHardDisk (disk);
+
+                    // add virtual cd devices for each physical one (up to two)
+                    ushort numdevs = 0;
+                    foreach (string dev in Utility.FindCdDrives ()) {
+                        if (numdevs > 1)
+                            break;
+                        
+                        VirtualCdDrive drive = new VirtualCdDrive (dev, 1, numdevs++, DiskBusType.Ide,
+                                                                   CdDeviceType.Raw);
+                        machine.AddCdDrive (drive);
+                    }
+
+                    return machine;
+                }
+            }
+        }
+
         public VirtualMachine CreateMachineFromIso (string name, string iso) {
             if (name == null) {
                 name = Path.GetFileNameWithoutExtension (iso);
             }
 
-            VirtualMachine machine = CreateMachine (name);
+            VirtualMachine machine = CreateDefaultMachine (name);
+
+            // remove the existing primary cd drive, if one exists
+            foreach (VirtualCdDrive drive in machine.CdDrives) {
+                if (drive.BusNumber == 1 && drive.DeviceNumber == 0) {
+                    machine.RemoveCdDrive (drive);
+                    break;
+                }
+            }
+            
             machine.AddCdDrive (new VirtualCdDrive (iso, 1, 0, DiskBusType.Ide, CdDeviceType.Iso));
-            machine.Save ();
             
             return machine;
         }
