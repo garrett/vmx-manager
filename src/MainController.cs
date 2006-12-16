@@ -47,8 +47,6 @@ namespace VmxManager {
             
             ConfigDialog dialog = new ConfigDialog (vmview.GetSelectedMachine (), window);
             dialog.Response += delegate (object d, ResponseArgs rargs) {
-                dialog.Hide ();
-
                 bool saveResult = true;
                 if (rargs.ResponseId == ResponseType.Ok) {
                     saveResult = dialog.Save ();
@@ -92,8 +90,6 @@ namespace VmxManager {
                     
             ConfigDialog dialog = new ConfigDialog (machine, window);
             dialog.Response += delegate (object d, ResponseArgs respargs) {
-                dialog.Hide ();
-                
                 bool saveResult = true;
                 if (respargs.ResponseId == ResponseType.Ok) {
                     manager.AddMachine (machine);

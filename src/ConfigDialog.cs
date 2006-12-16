@@ -199,11 +199,13 @@ namespace VmxManager {
                 pane = new DiskProgressPane ();
 
                 handler = delegate (object o, ProgressArgs args) {
+                    if (pane.IsMapped) {
+                        mainWindow.SetContent (pane);
+                        pane.Show ();
+                    }
+                    
                     pane.Progress = args.Progress;
                 };
-
-                mainWindow.SetContent (pane);
-                pane.Show ();
             }
 
             try {

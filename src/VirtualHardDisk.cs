@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
+using Mono.Unix;
 
 namespace VmxManager {
     
@@ -415,7 +416,31 @@ namespace VmxManager {
             Create (null);
         }
 
+        private void CheckDiskSpace () {
+            UnixDriveInfo drive = null;
+            
+            foreach (UnixDriveInfo d in UnixDriveInfo.GetDrives ()) {
+                if (file.IndexOf (d.RootDirectory.FullName) == 0 &&
+                    (drive == null || d.RootDirectory.FullName.Length > drive.RootDirectory.FullName.Length)) {
+                    drive = d;
+                }
+            }
+
+            if (drive == null) {
+                throw new ApplicationException (Catalog.GetString ("Failed to find mount point for disk"));
+            }
+
+            if (drive.AvailableFreeSpace < Capacity) {
+                throw new ApplicationException (String.Format (Catalog.GetString ("You do not have enough free space to create this disk.  Please free up {0} of space."), Utility.FormatBytes (Capacity - drive.AvailableFreeSpace)));
+            }
+        }
+        
         public void Create (ProgressHandler handler) {
+            if (type == HardDiskType.SplitFlat ||
+                type == HardDiskType.SingleFlat) {
+                CheckDiskSpace ();
+            }
+            
             extents.Clear ();
 
             CalculateGeometry ();
