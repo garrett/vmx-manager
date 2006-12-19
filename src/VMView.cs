@@ -9,15 +9,18 @@ namespace VmxManager {
     public class VMView : TreeView {
 
         private MainController controller;
-        private CellLayoutDataFunc cellLayoutFunc;
+        private CellLayoutDataFunc cellTextLayoutFunc;
+        private CellLayoutDataFunc cellPixbufLayoutFunc;
 
         public VMView (MainController controller) : base () {
             this.controller = controller;
             
             HeadersVisible = false;
 
-            cellLayoutFunc = new CellLayoutDataFunc (OnCellLayout);
-            AppendColumn ("machines", new CellRendererText (), cellLayoutFunc);
+            cellTextLayoutFunc = new CellLayoutDataFunc (OnCellTextLayout);
+            cellPixbufLayoutFunc = new CellLayoutDataFunc (OnCellPixbufLayout);
+            AppendColumn ("icon", new CellRendererPixbuf (), cellPixbufLayoutFunc);
+            AppendColumn ("machines", new CellRendererText (), cellTextLayoutFunc);
 
             EnableModelDragDest (new TargetEntry[] { new TargetEntry ("text/uri-list", 0, 0) },
                                  Gdk.DragAction.Copy | Gdk.DragAction.Default);
@@ -79,13 +82,22 @@ namespace VmxManager {
             controller.OnStart (this, new EventArgs ());
         }
 
-        private void OnCellLayout (CellLayout layout, CellRenderer cell,
+        private void OnCellTextLayout (CellLayout layout, CellRenderer cell,
                                    TreeModel model, TreeIter iter) {
 
             CellRendererText textCell = (cell as CellRendererText);
 
             VirtualMachine machine = (VirtualMachine) model.GetValue (iter, 0);
             textCell.Markup = String.Format ("<b><span size=\"large\">{0}</span></b>\nStatus: {1}, Operating System: {2}", machine.Name, machine.IsRunning ? "Running" : "Stopped", machine.OperatingSystem.DisplayName);
+        }
+
+        private void OnCellPixbufLayout (CellLayout layout, CellRenderer cell,
+                                   TreeModel model, TreeIter iter) {
+
+            CellRendererPixbuf pixbufCell = (cell as CellRendererPixbuf);
+
+            VirtualMachine machine = (VirtualMachine) model.GetValue (iter, 0);
+            pixbufCell.Pixbuf = machine.PreviewIcon;
         }
 
         protected override bool OnKeyPressEvent (Gdk.EventKey key) {

@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
@@ -30,6 +31,8 @@ namespace VmxManager {
 
     public class VirtualMachine {
 
+        private const int PreviewIconSize = 64;
+
         private string file;
         private Dictionary<string, string> dict = new Dictionary<string, string> ();
         private bool running;
@@ -38,6 +41,8 @@ namespace VmxManager {
         private List<VirtualHardDisk> hardDisks = new List<VirtualHardDisk> ();
         private List<VirtualCdDrive> cds = new List<VirtualCdDrive> ();
         private List<VirtualEthernet> ethernetDevices = new List<VirtualEthernet> ();
+
+        private Gdk.Pixbuf icon;
 
         public event VirtualHardDiskHandler HardDiskAdded;
         public event VirtualHardDiskHandler HardDiskRemoved;
@@ -79,6 +84,16 @@ namespace VmxManager {
                 if (handler != null) {
                     handler (this, new EventArgs ());
                 }
+            }
+        }
+
+        public Gdk.Pixbuf PreviewIcon {
+            get {
+                if (icon == null) {
+                    LoadPreviewIcon ();
+                }
+
+                return icon;
             }
         }
 
@@ -515,8 +530,9 @@ namespace VmxManager {
                 File.Delete (Path.Combine (dir, dict["nvram"]));
             }
 
-            if (dict.ContainsKey ("checkpoint.vmState")) {
-                File.Delete (Path.Combine (dir, dict["checkpoint.vmState"]));
+            string vmss = GetCheckPointFile ();
+            if (vmss != null) {
+                File.Delete (vmss);
             }
 
             File.Delete (Path.Combine (dir, Name + ".vmsd"));
@@ -574,12 +590,65 @@ namespace VmxManager {
             if (val && !running) {
                 handler = Started;
             } else if (!val && running) {
+                LoadPreviewIcon ();
                 handler = Stopped;
             }
 
             running = val;
             if (handler != null) {
                 handler (this, new EventArgs ());
+            }
+        }
+
+        private string GetCheckPointFile () {
+            string vmss = this["checkpoint.vmState"];
+            if (vmss == null)
+                return null;
+
+            if (!Path.IsPathRooted (vmss)) {
+                vmss = Path.Combine (Path.GetDirectoryName (file), vmss);
+            }
+
+            return vmss;
+        }
+
+        private void LoadPreviewIcon () {
+            string vmss = GetCheckPointFile ();
+            if (vmss == null || !File.Exists (vmss))
+                return;
+
+            int header = BitConverter.ToInt32 (new byte[] { 0x89, (byte) 'P', (byte) 'N', (byte) 'G' }, 0);
+            int chunkSize = 1024;
+
+            using (FileStream stream = File.OpenRead (vmss)) {
+                byte[] chunk = new byte[chunkSize];
+
+                for (;;) {
+                    int len = stream.Read (chunk, 0, chunkSize);
+                    if (len == 0)
+                        break;
+
+                    for (int i = 0; i < len - 4; i++) {
+                        int val = BitConverter.ToInt32 (chunk, i);
+                        if (val == header) {
+                            stream.Seek (-(len - i), SeekOrigin.Current);
+
+                            try {
+                                Gdk.Pixbuf pixbuf = new Gdk.Pixbuf (stream);
+
+                                double scale = Math.Min  (PreviewIconSize / (double) pixbuf.Width,
+                                                          PreviewIconSize / (double) pixbuf.Height);
+                                int scaleWidth = (int) (scale * pixbuf.Width);
+                                int scaleHeight = (int) (scale * pixbuf.Height);
+
+                                icon = pixbuf.ScaleSimple (scaleWidth, scaleHeight, Gdk.InterpType.Bilinear);
+                            } catch {
+                            }
+                            
+                            return;
+                        }
+                    }
+                }
             }
         }
     }
