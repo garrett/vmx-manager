@@ -29,13 +29,19 @@ namespace VmxManager {
         }
     }
 
+    public enum VirtualMachineStatus {
+        Running,
+        Suspended,
+        Off
+    }
+
     public class VirtualMachine {
 
         private const int PreviewIconSize = 64;
 
         private string file;
         private Dictionary<string, string> dict = new Dictionary<string, string> ();
-        private bool running;
+        private VirtualMachineStatus status;
         private FileSystemWatcher watcher;
         
         private List<VirtualHardDisk> hardDisks = new List<VirtualHardDisk> ();
@@ -55,6 +61,11 @@ namespace VmxManager {
         public event EventHandler Stopped;
         public event EventHandler NameChanged;
         public event EventHandler FileNameChanged;
+
+        private string LockFileName {
+            get { return file + ".WRITELOCK"; }
+        }
+
         
         public string FileName {
             get { return file; }
@@ -67,6 +78,20 @@ namespace VmxManager {
                 }
                 
                 CreateWatcher ();
+            }
+        }
+
+        private string CheckPointFileName {
+            get {
+                string vmss = this["checkpoint.vmState"];
+                if (vmss == null)
+                    return null;
+                
+                if (!Path.IsPathRooted (vmss)) {
+                    vmss = Path.Combine (Path.GetDirectoryName (file), vmss);
+                }
+                
+                return vmss;
             }
         }
 
@@ -140,8 +165,8 @@ namespace VmxManager {
             get { return new ReadOnlyCollection<VirtualEthernet> (ethernetDevices); }
         }
 
-        public bool IsRunning {
-            get { return running; }
+        public VirtualMachineStatus Status {
+            get { return status; }
         }
 
         public string this[string key] {
@@ -162,7 +187,7 @@ namespace VmxManager {
         public VirtualMachine (string file) {
             this.FileName = file;
             LoadFromFile ();
-            CheckRunning ();
+            UpdateStatus ();
         }
 
         public static VirtualMachine Create (string file, string name) {
@@ -341,7 +366,7 @@ namespace VmxManager {
                 if (this[basekey + "present"] != null) {
                     string connType = this[basekey + "connectionType"];
                     string address = this[basekey + "address"];
-                    string dev = this[basekey + "virtualDev"];
+                    // string dev = this[basekey + "virtualDev"];
 
                     VirtualEthernet eth = new VirtualEthernet (Utility.ParseNetworkType (connType),
                                                                address,
@@ -530,7 +555,7 @@ namespace VmxManager {
                 File.Delete (Path.Combine (dir, dict["nvram"]));
             }
 
-            string vmss = GetCheckPointFile ();
+            string vmss = CheckPointFileName;
             if (vmss != null) {
                 File.Delete (vmss);
             }
@@ -572,48 +597,51 @@ namespace VmxManager {
         }
 
         private void OnFileCreated (object o, FileSystemEventArgs args) {
-            if (args.FullPath == file + ".WRITELOCK") {
-                CheckRunning ();
+            if (args.FullPath == LockFileName || args.FullPath == CheckPointFileName) {
+                UpdateStatus ();
             }
         }
 
         private void OnFileDeleted (object o, FileSystemEventArgs args) {
-            if (args.FullPath == file + ".WRITELOCK") {
-                CheckRunning ();
+            if (args.FullPath == LockFileName || args.FullPath == CheckPointFileName) {
+                UpdateStatus ();
             }
         }
 
-        private void CheckRunning () {
-            bool val = File.Exists (file + ".WRITELOCK");
+        private void UpdateStatus () {
+            bool lockExists = File.Exists (LockFileName);
+            bool checkPointExists = File.Exists (CheckPointFileName);
 
+            VirtualMachineStatus newstatus;
+            if (lockExists) {
+                newstatus = VirtualMachineStatus.Running;
+            } else if (checkPointExists) {
+                newstatus = VirtualMachineStatus.Suspended;
+            } else {
+                newstatus = VirtualMachineStatus.Off;
+                icon = null;
+            }
+
+            if (newstatus == status)
+                return;
+
+            status = newstatus;
+            
             EventHandler handler = null;
-            if (val && !running) {
+            if (status == VirtualMachineStatus.Running) {
                 handler = Started;
-            } else if (!val && running) {
+            } else {
                 LoadPreviewIcon ();
                 handler = Stopped;
             }
 
-            running = val;
             if (handler != null) {
                 handler (this, new EventArgs ());
             }
         }
 
-        private string GetCheckPointFile () {
-            string vmss = this["checkpoint.vmState"];
-            if (vmss == null)
-                return null;
-
-            if (!Path.IsPathRooted (vmss)) {
-                vmss = Path.Combine (Path.GetDirectoryName (file), vmss);
-            }
-
-            return vmss;
-        }
-
         private void LoadPreviewIcon () {
-            string vmss = GetCheckPointFile ();
+            string vmss = CheckPointFileName;
             if (vmss == null || !File.Exists (vmss))
                 return;
 

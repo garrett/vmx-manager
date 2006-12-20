@@ -34,7 +34,7 @@ namespace VmxManager {
                 vmview.Model.GetIter (out iter, path);
                 
                 VirtualMachine machine = (VirtualMachine) vmview.Model.GetValue (iter, 0);
-                if (!machine.IsRunning) {
+                if (machine.Status != VirtualMachineStatus.Running) {
                     manager.StartMachine (machine);
                 }
             }

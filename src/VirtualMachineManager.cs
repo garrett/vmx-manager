@@ -209,7 +209,7 @@ namespace VmxManager {
         private static extern int gnome_desktop_item_launch (IntPtr item, IntPtr args, int flags, IntPtr error);
 
         public void StartMachine (VirtualMachine machine) {
-            if (machine.IsRunning) {
+            if (machine.Status == VirtualMachineStatus.Running) {
                 return;
             }
             
@@ -234,10 +234,6 @@ namespace VmxManager {
             if (File.Exists (file)) {
                 File.Delete (file);
             }
-        }
-
-        private string CreateDesktopFile (VirtualMachine machine) {
-            return CreateDesktopFile (machine, false);
         }
 
         private string CreateDesktopFile (VirtualMachine machine, bool overwrite) {

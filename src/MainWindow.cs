@@ -232,7 +232,7 @@ namespace VmxManager {
             bool machineSelected = vmview.Selection.CountSelectedRows () > 0;
 
             configureButton.Sensitive = removeButton.Sensitive = actions.GetAction ("Configure").Sensitive =
-                actions.GetAction ("Remove").Sensitive = vmview.IsMapped && machineSelected && !vmview.GetSelectedMachine ().IsRunning;
+                actions.GetAction ("Remove").Sensitive = vmview.IsMapped && machineSelected && vmview.GetSelectedMachine ().Status != VirtualMachineStatus.Running;
 
             startButton.Sensitive = actions.GetAction ("Start").Sensitive = configureButton.Sensitive && havePlayer;
 

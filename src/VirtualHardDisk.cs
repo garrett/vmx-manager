@@ -191,7 +191,6 @@ namespace VmxManager {
         
         private const int SectorsIn2Gb = 4194304;
 
-        private string adapter;
         private int sectors;
         private int heads;
         private int cylinders;

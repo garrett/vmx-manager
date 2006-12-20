@@ -5,11 +5,7 @@ namespace VmxManager {
 
     public class VMModel : ListStore {
 
-        private VirtualMachineManager manager;
-
         public VMModel (VirtualMachineManager manager) : base (typeof (VirtualMachine)) {
-            this.manager = manager;
-
             manager.Added += delegate (object o, VirtualMachineArgs args) {
                 Application.Invoke (delegate {
                     AddMachine (args.Machine);

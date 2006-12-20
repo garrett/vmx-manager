@@ -5,11 +5,7 @@ namespace VmxManager {
     
     public class DeviceModel : ListStore {
 
-        private VirtualMachine machine;
-
         public DeviceModel (VirtualMachine machine) : base (typeof (IVirtualDevice)) {
-            this.machine = machine;
-
             foreach (VirtualHardDisk disk in machine.HardDisks) {
                 AddDevice (disk);
             }

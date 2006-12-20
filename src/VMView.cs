@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using Mono.Unix;
 using Gtk;
 
 namespace VmxManager {
@@ -82,13 +83,26 @@ namespace VmxManager {
             controller.OnStart (this, new EventArgs ());
         }
 
+        private string GetStatusString (VirtualMachineStatus status) {
+            switch (status) {
+            case VirtualMachineStatus.Running:
+                return Catalog.GetString ("Running");
+            case VirtualMachineStatus.Suspended:
+                return Catalog.GetString ("Suspended");
+            case VirtualMachineStatus.Off:
+                return Catalog.GetString ("Powered Off");
+            default:
+                return null;
+            }
+        }
+
         private void OnCellTextLayout (CellLayout layout, CellRenderer cell,
                                    TreeModel model, TreeIter iter) {
 
             CellRendererText textCell = (cell as CellRendererText);
 
             VirtualMachine machine = (VirtualMachine) model.GetValue (iter, 0);
-            textCell.Markup = String.Format ("<b><span size=\"large\">{0}</span></b>\nStatus: {1}, Operating System: {2}", machine.Name, machine.IsRunning ? "Running" : "Stopped", machine.OperatingSystem.DisplayName);
+            textCell.Markup = String.Format ("<b><span size=\"large\">{0}</span></b>\nStatus: {1}, Operating System: {2}", machine.Name, GetStatusString (machine.Status), machine.OperatingSystem.DisplayName);
         }
 
         private void OnCellPixbufLayout (CellLayout layout, CellRenderer cell,
