@@ -140,15 +140,20 @@ namespace VmxManager {
         }
 
         private void SetOsCombo () {
-            TreeIter iter;
+            TreeStore model = (TreeStore) guestOsCombo.Model;
 
-            ListStore model = (ListStore) guestOsCombo.Model;
             for (int i = 0; i < model.IterNChildren (); i++) {
-                model.IterNthChild (out iter, i);
+                TreeIter sectionIter;
+                model.IterNthChild (out sectionIter, i);
 
-                GuestOperatingSystem os = (GuestOperatingSystem) model.GetValue (iter, 1);
-                if (os.Equals (machine.OperatingSystem)) {
-                    guestOsCombo.SetActiveIter (iter);
+                for (int j = 0; j < model.IterNChildren (sectionIter); j++) {
+                    TreeIter iter;
+                    model.IterNthChild (out iter, sectionIter, j);
+                    
+                    GuestOperatingSystem os = (GuestOperatingSystem) model.GetValue (iter, 1);
+                    if (os.Equals (machine.OperatingSystem)) {
+                        guestOsCombo.SetActiveIter (iter);
+                    }
                 }
             }
         }

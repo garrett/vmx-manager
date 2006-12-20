@@ -16,6 +16,7 @@ namespace VmxManager {
         private int suggestedRam;
         private string name;
         private string displayName;
+        private string section;
 
         public bool IsLegacy {
             get { return legacy; }
@@ -41,14 +42,19 @@ namespace VmxManager {
             get { return displayName; }
         }
 
+        public string Section {
+            get { return section; }
+        }
+
         public GuestOperatingSystem (bool legacy, ScsiDeviceType suggestedScsi, EthernetDeviceType suggestedEthernet,
-                                     int suggestedRam, string name, string displayName) {
+                                     int suggestedRam, string name, string displayName, string section) {
             this.legacy = legacy;
             this.suggestedScsi = suggestedScsi;
             this.suggestedEthernet = suggestedEthernet;
             this.suggestedRam = suggestedRam;
             this.name = name;
             this.displayName = displayName;
+            this.section = section;
         }
 
         public override bool Equals (object o) {
@@ -75,16 +81,17 @@ namespace VmxManager {
                 while ((line = reader.ReadLine ()) != null) {
                     string[] splitLine = line.Split (',');
 
-                    string displayName = splitLine[5];
+                    string displayName = splitLine[6];
                     displayName = displayName.Trim ('"');
 
-                    GuestOperatingSystem os = new GuestOperatingSystem (splitLine[1] == "TRUE",
-                                                                        Utility.ParseScsiDeviceType (splitLine[3]),
-                                                                        Utility.ParseEthernetDeviceType (splitLine[2]),
-                                                                        Int32.Parse (splitLine[4]),
-                                                                        splitLine[0], displayName);
+                    GuestOperatingSystem os = new GuestOperatingSystem (splitLine[2] == "TRUE",
+                                                                        Utility.ParseScsiDeviceType (splitLine[4]),
+                                                                        Utility.ParseEthernetDeviceType (splitLine[3]),
+                                                                        Int32.Parse (splitLine[5]),
+                                                                        splitLine[1], displayName,
+                                                                        splitLine[0]);
 
-                    oshash[splitLine[0]] = os;
+                    oshash[splitLine[1]] = os;
                 }
             }
         }
