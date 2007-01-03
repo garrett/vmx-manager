@@ -94,6 +94,7 @@ namespace VmxManager {
             CellRendererText renderer = new CellRendererText ();
             guestOsCombo.PackStart (renderer, false);
             guestOsCombo.AddAttribute (renderer, "text", 0);
+            guestOsCombo.Changed += OnGuestOsChanged;
 
             devview = new DeviceView ();
             devview.RowActivated += delegate {
@@ -129,6 +130,10 @@ namespace VmxManager {
             }
 
             Load ();
+        }
+
+        private void OnGuestOsChanged (object o, EventArgs args) {
+            memorySpin.Value = GetSelectedOs ().SuggestedRam;
         }
 
         private void OnPopupPosition (Menu menu, out int x, out int y, out bool push_in) {
@@ -167,17 +172,21 @@ namespace VmxManager {
             SetOsCombo ();
         }
 
+        private GuestOperatingSystem GetSelectedOs () {
+            TreeIter iter;
+            if (guestOsCombo.GetActiveIter (out iter)) {
+                return (GuestOperatingSystem) guestOsCombo.Model.GetValue (iter, 1);
+            }
+
+            return null;
+        }
+
         public bool Save () {
             machine.Name = nameEntry.Text;
             machine.MemorySize = (int) memorySpin.Value;
             machine.SoundEnabled = soundToggle.Active;
             machine.UsbEnabled = usbToggle.Active;
-
-            TreeIter iter;
-            if (guestOsCombo.GetActiveIter (out iter)) {
-                GuestOperatingSystem os = (GuestOperatingSystem) guestOsCombo.Model.GetValue (iter, 1);
-                machine.OperatingSystem = os;
-            }
+            machine.OperatingSystem = GetSelectedOs ();
 
             string vmdir = System.IO.Path.GetDirectoryName (machine.FileName);
             if (!Directory.Exists (vmdir)) {

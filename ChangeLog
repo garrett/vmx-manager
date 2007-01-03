@@ -1,5 +1,10 @@
 2007-01-03  James Willcox  <james@ximian.com>
 
+	* src/ConfigDialog.cs: set the memory spin button value to the
+	OS's suggested size when the OS selection is changed.
+
+2007-01-03  James Willcox  <james@ximian.com>
+
 	* src/VirtualMachine.cs: make the default state 'off'.
 
 2006-12-20  James Willcox  <james@ximian.com>
