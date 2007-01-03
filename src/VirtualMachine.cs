@@ -41,7 +41,7 @@ namespace VmxManager {
 
         private string file;
         private Dictionary<string, string> dict = new Dictionary<string, string> ();
-        private VirtualMachineStatus status;
+        private VirtualMachineStatus status = VirtualMachineStatus.Off;
         private FileSystemWatcher watcher;
         
         private List<VirtualHardDisk> hardDisks = new List<VirtualHardDisk> ();
