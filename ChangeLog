@@ -1,3 +1,8 @@
+2007-01-04  James Willcox  <james@ximian.com>
+
+	* src/Utility.cs (WritePadding): no need to let the main loop run
+	if there is no progress handler.
+
 2007-01-03  James Willcox  <james@ximian.com>
 
 	* src/ConfigDialog.cs: set the memory spin button value to the

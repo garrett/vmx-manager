@@ -346,7 +346,7 @@ namespace VmxManager {
                     }
                 }
 
-                while (Application.EventsPending ()) {
+                while (handler != null && Application.EventsPending ()) {
                     Application.RunIteration ();
                 }
             }
