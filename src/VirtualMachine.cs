@@ -84,7 +84,7 @@ namespace VmxManager {
         private string CheckPointFileName {
             get {
                 string vmss = this["checkpoint.vmState"];
-                if (vmss == null)
+                if (vmss == null || vmss == String.Empty)
                     return null;
                 
                 if (!Path.IsPathRooted (vmss)) {
