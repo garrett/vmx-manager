@@ -1,3 +1,7 @@
+2007-01-12  James Willcox  <james@ximian.com>
+
+	* configure.ac: bump to 0.2.2
+
 2007-01-04  James Willcox  <james@ximian.com>
 
 	* src/VirtualMachine.cs: ignore an empty checkpoint.vmState value
