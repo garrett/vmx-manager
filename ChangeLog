@@ -1,3 +1,11 @@
+2007-01-18  James Willcox  <snorp@novell.com>
+
+	* src/ConfigDialog.cs: don't crash when selecting the top of the
+	operating system submenu, fixes #236385
+
+	* src/VirtualMachine.cs: add sanity check when loading vmx files, fixes
+	bug #236417
+
 2007-01-12  James Willcox  <james@ximian.com>
 
 	* configure.ac: bump to 0.2.2

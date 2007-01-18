@@ -133,7 +133,13 @@ namespace VmxManager {
         }
 
         private void OnGuestOsChanged (object o, EventArgs args) {
-            memorySpin.Value = GetSelectedOs ().SuggestedRam;
+            GuestOperatingSystem os = GetSelectedOs ();
+            if (os == null) {
+                SetOsCombo ();
+                return;
+            }
+            
+            memorySpin.Value = os.SuggestedRam;
         }
 
         private void OnPopupPosition (Menu menu, out int x, out int y, out bool push_in) {

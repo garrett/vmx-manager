@@ -323,6 +323,11 @@ namespace VmxManager {
             LoadDisks (DiskBusType.Ide);
             LoadDisks (DiskBusType.Scsi);
             LoadEthernetDevices ();
+
+            // do a sanity check
+            if (!dict.ContainsKey ("guestOS")) {
+                throw new ApplicationException (Catalog.GetString ("The specified file is not a valid virtual machine."));
+            }
         }
 
         private void LoadDisks (DiskBusType busType) {
