@@ -1,5 +1,9 @@
 2007-01-18  James Willcox  <snorp@novell.com>
 
+	* configure.ac: bump to 0.2.3
+
+2007-01-18  James Willcox  <snorp@novell.com>
+
 	* src/ConfigDialog.cs: don't crash when selecting the top of the
 	operating system submenu, fixes #236385
 
