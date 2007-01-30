@@ -170,12 +170,12 @@ namespace VmxManager {
         }
 
         private void Load () {
+            SetOsCombo ();
+
             nameEntry.Text = machine.Name;
             memorySpin.Value = machine.MemorySize;
             soundToggle.Active = machine.SoundEnabled;
             usbToggle.Active = machine.UsbEnabled;
-
-            SetOsCombo ();
         }
 
         private GuestOperatingSystem GetSelectedOs () {
@@ -193,6 +193,8 @@ namespace VmxManager {
             machine.SoundEnabled = soundToggle.Active;
             machine.UsbEnabled = usbToggle.Active;
             machine.OperatingSystem = GetSelectedOs ();
+
+            Console.WriteLine ("Setting machine memory to: " + machine.MemorySize);
 
             string vmdir = System.IO.Path.GetDirectoryName (machine.FileName);
             if (!Directory.Exists (vmdir)) {

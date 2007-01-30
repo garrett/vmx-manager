@@ -1,6 +1,6 @@
 AC_INIT(src/EntryPoint.cs)
 
-AM_INIT_AUTOMAKE(vmx-manager, 0.2.3)
+AM_INIT_AUTOMAKE(vmx-manager, 0.2.4)
 AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL([0.21])

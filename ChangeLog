@@ -1,3 +1,9 @@
+2007-01-30  James Willcox  <snorp@novell.com>
+
+	* configure.ac: bump to 0.2.4
+	* src/ConfigDialog.cs (Load): set the os combo first to avoid nuking
+	the memory spin button value.
+
 2007-01-18  James Willcox  <snorp@novell.com>
 
 	* configure.ac: bump to 0.2.3
