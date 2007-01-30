@@ -194,8 +194,6 @@ namespace VmxManager {
             machine.UsbEnabled = usbToggle.Active;
             machine.OperatingSystem = GetSelectedOs ();
 
-            Console.WriteLine ("Setting machine memory to: " + machine.MemorySize);
-
             string vmdir = System.IO.Path.GetDirectoryName (machine.FileName);
             if (!Directory.Exists (vmdir)) {
                 Directory.CreateDirectory (vmdir);
