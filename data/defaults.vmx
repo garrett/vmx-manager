@@ -8,10 +8,8 @@ floppy0.startConnected = "FALSE"
 floppy0.fileName = "/dev/fd0"
 floppy0.present = "FALSE"
 
-ethernet0.present = "TRUE"
 usb.present = "TRUE"
 sound.present = "TRUE"
 sound.virtualDev = "es1371"
 
 guestOS = "sles"
-ethernet0.addressType = "generated"

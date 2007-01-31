@@ -1,0 +1,6 @@
+- Get rid of the cheesy VirtualMachine.AddFooDevice methods, and just have
+  AddDevice and RemoveDevice.
+
+- Add the ability to expand disks
+
+- Consider adding the ability to shrink disks

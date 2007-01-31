@@ -1,5 +1,16 @@
 2007-01-30  James Willcox  <snorp@novell.com>
 
+	* configure.ac: bump to 0.2.5
+	* src/ConfigDialog.cs: when the operating system is changed, also
+	change the type of network card in the machine to the suggested one.
+	* src/Utility.cs: add GetDefaultNetworkType, which picks NAT if the
+	host machine is a laptop, bridged otherwise.  This way if the user
+	switches between wired and wireless connections, the VMs will maintain
+	their connections.
+	* TODO: added
+
+2007-01-30  James Willcox  <snorp@novell.com>
+
 	* configure.ac: bump to 0.2.4
 	* src/ConfigDialog.cs (Load): set the os combo first to avoid nuking
 	the memory spin button value.

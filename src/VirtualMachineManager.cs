@@ -136,6 +136,11 @@ namespace VmxManager {
                 if (GetMachine (name) == null && GetMachineByFileName (name) == null) {
                     VirtualMachine machine = CreateMachine (name);
 
+                    // add one network interface
+                     VirtualEthernet ethernet = new VirtualEthernet (Utility.GetDefaultNetworkType (), null, 
+                                                                     machine.OperatingSystem.SuggestedEthernetDeviceType);
+                     machine.AddEthernetDevice (ethernet);
+                    
                     // add a default 6gb disk
                     VirtualHardDisk disk = new VirtualHardDisk (0, 0, DiskBusType.Ide, (long) 6 * 1024 * 1024 * 1024);
                     disk.HardDiskType = HardDiskType.SplitSparse;

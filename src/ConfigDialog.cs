@@ -140,6 +140,10 @@ namespace VmxManager {
             }
             
             memorySpin.Value = os.SuggestedRam;
+
+            foreach (VirtualEthernet ethernet in machine.EthernetDevices) {
+                ethernet.EthernetType = os.SuggestedEthernetDeviceType;
+            }
         }
 
         private void OnPopupPosition (Menu menu, out int x, out int y, out bool push_in) {
@@ -271,7 +275,7 @@ namespace VmxManager {
         }
 
         private void OnAddEthernet (object o, EventArgs args) {
-            VirtualEthernet ethernet = new VirtualEthernet (NetworkType.Bridged, null, 
+            VirtualEthernet ethernet = new VirtualEthernet (Utility.GetDefaultNetworkType (), null, 
                                                             machine.OperatingSystem.SuggestedEthernetDeviceType);
             EthernetConfigDialog dialog = new EthernetConfigDialog (ethernet, this);
             dialog.Response += delegate (object b, ResponseArgs rargs) {

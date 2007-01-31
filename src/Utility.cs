@@ -77,7 +77,7 @@ namespace VmxManager {
             case "nat":
                 return NetworkType.Nat;
             default:
-                return NetworkType.Bridged;
+                return GetDefaultNetworkType ();
             }
         }
 
@@ -361,6 +361,15 @@ namespace VmxManager {
             }
 
             return devices;
+        }
+
+        public static NetworkType GetDefaultNetworkType () {
+            Hal.Device computer = new Hal.Device ("/org/freedesktop/Hal/devices/computer");
+            if (computer.GetPropertyString ("system.formfactor") == "laptop") {
+                return NetworkType.Nat;
+            } else {
+                return NetworkType.Bridged;
+            }
         }
 
         public static int GetHostMemorySize () {
