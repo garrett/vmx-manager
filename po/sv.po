@@ -1,0 +1,441 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vmx-manager\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-02-23 15:05+0100\n"
+"PO-Revision-Date: 2007-02-23 15:01+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/vmx-manager.glade.h:1
+msgid "\n"
+msgstr "\n"
+
+#: ../data/vmx-manager.glade.h:3
+msgid ""
+"0\n"
+"1"
+msgstr ""
+"0\n"
+"1"
+
+#: ../data/vmx-manager.glade.h:5
+msgid "<b>Bus _Type:</b>"
+msgstr "<b>Buss_typ:</b>"
+
+#: ../data/vmx-manager.glade.h:6
+msgid "<b>Connection type:</b>"
+msgstr "<b>Anslutningstyp:</b>"
+
+#: ../data/vmx-manager.glade.h:7
+msgid "<b>Devices</b>"
+msgstr "<b>Enheter</b>"
+
+#: ../data/vmx-manager.glade.h:8
+msgid "<b>General</b>"
+msgstr "<b>Allmänt</b>"
+
+#: ../data/vmx-manager.glade.h:9
+msgid "<b>Position:</b>"
+msgstr "<b>Position:</b>"
+
+#: ../data/vmx-manager.glade.h:10
+msgid ""
+"<b>There are currently no virtual machines.</b><i>\n"
+"You can add or create some using the buttons on the left side of this window."
+"</i>"
+msgstr ""
+"<b>Det finns för närvarande inga virtuella maskiner.</b><i>\n"
+"Du kan lägga till eller skapa några med hjälp av knapparna på vänster sida "
+"av det här fönstret.</i>"
+
+#: ../data/vmx-manager.glade.h:12
+msgid "<b>_Size:</b>"
+msgstr "<b>_Storlek:</b>"
+
+#: ../data/vmx-manager.glade.h:13
+msgid "<span size=\"large\"><b>Common Tasks</b></span>"
+msgstr "<span size=\"large\"><b>Vanliga uppgifter</b></span>"
+
+#: ../data/vmx-manager.glade.h:14
+msgid "<span size=\"large\"><b>Machine Tasks</b></span>"
+msgstr "<span size=\"large\"><b>Maskinuppgifter</b></span>"
+
+#: ../data/vmx-manager.glade.h:15 ../src/MainWindow.cs:110
+msgid "Add Existing Machine"
+msgstr "Lägg till befintlig maskin"
+
+#: ../data/vmx-manager.glade.h:16
+msgid "Allocate entire disk in advance"
+msgstr "Allokera hela disken i förväg"
+
+#: ../data/vmx-manager.glade.h:17
+msgid ""
+"Bridged\n"
+"Host Only\n"
+"NAT"
+msgstr ""
+"Bryggad\n"
+"Endast värd\n"
+"NAT"
+
+#: ../data/vmx-manager.glade.h:20
+msgid "Configure"
+msgstr "Konfigurera"
+
+#: ../data/vmx-manager.glade.h:21 ../src/CdConfigDialog.cs:37
+msgid "Configure CD-ROM Drive"
+msgstr "Konfigurera cd-rom-enhet"
+
+#: ../data/vmx-manager.glade.h:22
+msgid "Configure Disk"
+msgstr "Konfigurera disk"
+
+#: ../data/vmx-manager.glade.h:23
+msgid "Configure Virtual Machine"
+msgstr "Konfigurera virtuell maskin"
+
+#: ../data/vmx-manager.glade.h:24 ../src/MainWindow.cs:102
+msgid "Create Blank Machine"
+msgstr "Skapa tom maskin"
+
+#: ../data/vmx-manager.glade.h:25 ../src/MainWindow.cs:106
+msgid "Create Machine From ISO"
+msgstr "Skapa maskin från iso-avbild"
+
+#: ../data/vmx-manager.glade.h:26
+msgid ""
+"IDE\n"
+"SCSI"
+msgstr ""
+"IDE\n"
+"SCSI"
+
+#: ../data/vmx-manager.glade.h:28
+msgid "ISO file"
+msgstr "ISO-fil"
+
+#: ../data/vmx-manager.glade.h:29
+msgid "MB"
+msgstr "MB"
+
+#: ../data/vmx-manager.glade.h:30
+msgid "Memory:"
+msgstr "Minne:"
+
+#: ../data/vmx-manager.glade.h:31
+msgid "Name:"
+msgstr "Namn:"
+
+#: ../data/vmx-manager.glade.h:32
+msgid "Operating System:"
+msgstr "Operativsystem:"
+
+#: ../data/vmx-manager.glade.h:33
+msgid "Physical drive"
+msgstr "Fysisk enhet"
+
+#: ../data/vmx-manager.glade.h:34
+msgid "Remove"
+msgstr "Ta bort"
+
+#: ../data/vmx-manager.glade.h:35
+msgid "Select A ISO File"
+msgstr "Välj en iso-fil"
+
+#: ../data/vmx-manager.glade.h:36
+msgid "Sound enabled"
+msgstr "Ljud aktiverat"
+
+#: ../data/vmx-manager.glade.h:37
+msgid "Start"
+msgstr "Starta"
+
+#: ../data/vmx-manager.glade.h:38
+msgid "USB enabled"
+msgstr "USB aktiverat"
+
+#: ../data/vmx-manager.glade.h:39 ../data/vmx-manager.desktop.in.in.h:1
+msgid "Virtual Machine Manager"
+msgstr "Hanterare för virtuella maskiner"
+
+#: ../data/vmx-manager.glade.h:40
+msgid "_Add"
+msgstr "_Lägg till"
+
+#: ../data/vmx-manager.glade.h:41
+msgid "_Configure"
+msgstr "_Konfigurera"
+
+#: ../data/vmx-manager.glade.h:42
+msgid "_Remove"
+msgstr "_Ta bort"
+
+#: ../data/vmx-manager.glade.h:43
+msgid "dialog1"
+msgstr "dialog1"
+
+#: ../data/vmx-manager.glade.h:44
+msgid "in GB"
+msgstr "i GB"
+
+#: ../src/EthernetConfigDialog.cs:20
+msgid "Configure Ethernet"
+msgstr "Konfigurera Ethernet"
+
+#. bridged
+#: ../src/EthernetConfigDialog.cs:51
+msgid ""
+"With a bridged configuration, the ethernet card will be connected to the "
+"same network as the host computer."
+msgstr ""
+"Med ett bryggad konfiguration kommer Ethernet-kortet att vara anslutet till "
+"samma nätverk som värddatorn."
+
+#. host only
+#: ../src/EthernetConfigDialog.cs:55
+msgid ""
+"With this configuration, the ethernet card will be on a private network used "
+"only by the host computer and the virtual machine."
+msgstr ""
+"Med den här konfigurationen kommer Ethernet-kortet att vara på ett privat "
+"nätverk som endast används av värddatorn och den virtuella maskinen."
+
+#. nat
+#: ../src/EthernetConfigDialog.cs:59
+msgid ""
+"With this configuration, the virtual machine will connect to the host's "
+"network through NAT (Network Address Translation)"
+msgstr ""
+"Med den här konfigurationen kommer den virtuella maskinen att vara ansluten "
+"till värdens nätverket via NAT (Network Address Translation)"
+
+#: ../src/CdConfigDialog.cs:60 ../src/MainController.cs:115
+msgid "CD Images"
+msgstr "CD-avbilder"
+
+#: ../src/MainWindow.cs:74
+msgid "<b>There are currently no virtual machines.</b>"
+msgstr "<b>Det finns för närvarande inga virtuella maskiner.</b>"
+
+#: ../src/MainWindow.cs:75
+msgid ""
+"You can add or create a new virtual machine using the buttons on the left"
+msgstr ""
+"Du kan lägga till eller skapa en ny virtuell maskin med hjälp av knapparna "
+"till vänster"
+
+#: ../src/MainWindow.cs:90
+msgid "Start Machine"
+msgstr "Starta maskin"
+
+#: ../src/MainWindow.cs:91
+msgid "Start the virtual machine"
+msgstr "Starta den virtuella maskinen"
+
+#: ../src/MainWindow.cs:94
+msgid "Configure Machine"
+msgstr "Konfigurera maskin"
+
+#: ../src/MainWindow.cs:95
+msgid "Configure the connected devices"
+msgstr "Konfigurera de anslutna enheterna"
+
+#: ../src/MainWindow.cs:98
+msgid "Remove Machine"
+msgstr "Ta bort maskin"
+
+#: ../src/MainWindow.cs:99
+msgid "Remove the virtual machine"
+msgstr "Ta bort den virtuella maskinen"
+
+#: ../src/MainWindow.cs:103
+msgid "Create a new empty virtual machine"
+msgstr "Skapa en ny tom virtuell maskin"
+
+#: ../src/MainWindow.cs:107
+msgid "Create a new machine which boots from a ISO"
+msgstr "Skapa en ny maskin som startar upp från en iso-avbild"
+
+#: ../src/MainWindow.cs:111
+msgid "Add an existing virtual machine"
+msgstr "Lägg till en befintlig virtuell maskin"
+
+#: ../src/MainWindow.cs:126
+msgid "VMware Player not found"
+msgstr "VMware Player hittades inte"
+
+#: ../src/MainWindow.cs:127
+msgid "It will not be possible to run virtual machines."
+msgstr "Det kommer inte att vara möjligt att köra virtuella maskiner."
+
+#: ../src/VirtualEthernet.cs:35
+msgid "Ethernet (Bridged)"
+msgstr "Ethernet (Bryggat)"
+
+#: ../src/VirtualEthernet.cs:37
+msgid "Ethernet (Host only)"
+msgstr "Ethernet (Endast värd)"
+
+#: ../src/VirtualEthernet.cs:39
+msgid "Ethernet (NAT)"
+msgstr "Ethernet (NAT)"
+
+#: ../src/VirtualEthernet.cs:41 ../src/ConfigDialog.cs:72
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: ../src/HardDiskConfigDialog.cs:29
+msgid "Configure Hard Disk"
+msgstr "Konfigurera hårddisk"
+
+#: ../src/VirtualHardDisk.cs:429
+msgid "Failed to find mount point for disk"
+msgstr "Misslyckades med att hitta monteringspunkt för disk"
+
+#: ../src/VirtualHardDisk.cs:433
+#, csharp-format
+msgid ""
+"You do not have enough free space to create this disk.  Please free up {0} "
+"of space."
+msgstr ""
+"Du har inte tillräckligt med ledigt utrymme för att skapa den här disken.  "
+"Frigör {0} utrymme."
+
+#: ../src/EntryPoint.cs:97
+msgid "An unexpected error occurred, Virtual Machine Manager will now exit:"
+msgstr ""
+"Ett oväntat fel inträffade, Hanterare för virtuella maskiner kommer nu att "
+"avslutas:"
+
+#: ../src/VirtualMachine.cs:103
+msgid "Unknown"
+msgstr "Okänd"
+
+#: ../src/VirtualMachine.cs:329
+msgid "The specified file is not a valid virtual machine."
+msgstr "Angiven fil är inte en giltig virtuell maskin."
+
+#: ../src/VirtualMachine.cs:387
+msgid ""
+"There are two conflicting disks.  Please change the position of one of the "
+"disks and try again."
+msgstr ""
+"Det finns två diskar i konflikt.  Ändra positionen för en av diskarna och "
+"försök igen."
+
+#: ../src/Utility.cs:275
+msgid "Virtual Machine Manager Error"
+msgstr "Fel i Hanterare för virtuella maskiner"
+
+#: ../src/ConfigDialog.cs:64
+msgid "Hard Disk"
+msgstr "Hårddisk"
+
+#: ../src/ConfigDialog.cs:65
+msgid "Add a hard disk"
+msgstr "Lägg till en hårddisk"
+
+#: ../src/ConfigDialog.cs:68
+msgid "CD-ROM"
+msgstr "Cd-rom"
+
+#: ../src/ConfigDialog.cs:69
+msgid "Add a CD-ROM drive"
+msgstr "Lägg till en cd-rom-enhet"
+
+#: ../src/ConfigDialog.cs:73
+msgid "Add an ethernet device"
+msgstr "Lägg till en Ethernet-enhet"
+
+#: ../src/ConfigDialog.cs:76
+msgid "Floppy"
+msgstr "Diskett"
+
+#: ../src/ConfigDialog.cs:77
+msgid "Add a floppy drive"
+msgstr "Lägg till en diskettenhet"
+
+#: ../src/ConfigDialog.cs:240
+msgid "Could not save changes"
+msgstr "Kunde inte spara ändringar"
+
+#: ../src/ConfigDialog.cs:303
+msgid "Would you like to delete the disk files, or keep them?"
+msgstr "Vill du ta bort diskfilerna eller behålla dem?"
+
+#: ../src/ConfigDialog.cs:304
+msgid "If you delete them, all data on the disk will be lost."
+msgstr "Om du tar bort dem kommer all data på disken att förloras."
+
+#: ../src/ConfigDialog.cs:305 ../src/MainController.cs:69
+msgid "Keep"
+msgstr "Behåll"
+
+#: ../src/MainController.cs:67
+msgid "Would you like to delete the virtual machine files, or keep them?"
+msgstr ""
+"Vill du ta bort de filerna för den virtuella maskinen eller behålla dem?"
+
+#: ../src/MainController.cs:68
+msgid "If you delete them, all data in the virtual machine will be lost."
+msgstr ""
+"Om du tar bort dem kommer all data i den virtuella maskinen att förloras."
+
+#: ../src/MainController.cs:108
+msgid "Choose a CD image"
+msgstr "Välj en cd-avbild"
+
+#: ../src/MainController.cs:130
+msgid "Choose a virtual machine file"
+msgstr "Välj en fil för virtuell maskin"
+
+#: ../src/MainController.cs:138
+msgid "Virtual Machines"
+msgstr "Virtuella maskiner"
+
+#: ../src/VirtualMachineManager.cs:123
+msgid "New Virtual Machine"
+msgstr "Ny virtuell maskin"
+
+#: ../src/VirtualMachineManager.cs:133
+#, csharp-format
+msgid "{0} #{1}"
+msgstr "{0} nr {1}"
+
+#: ../src/VirtualMachineManager.cs:223
+msgid "Failed to load launcher"
+msgstr "Misslyckades med att läsa in startaren"
+
+#: ../src/VirtualMachineManager.cs:254
+msgid "VMware Virtual Machine Launcher"
+msgstr "Startare för VMware Virtual Machine"
+
+#: ../src/VMView.cs:89
+msgid "Running"
+msgstr "Kör"
+
+#: ../src/VMView.cs:91
+msgid "Suspended"
+msgstr "Vänteläge"
+
+#: ../src/VMView.cs:93
+msgid "Powered Off"
+msgstr "Avstängd"
+
+#: ../src/DiskProgressPane.cs:30
+msgid "<b>Creating Hard Disks</b>"
+msgstr "<b>Skapar hårddiskar</b>"
+
+#: ../src/DiskProgressPane.cs:31
+msgid ""
+"Creating the hard disk(s) may take several minutes, depending on their size."
+msgstr "Skapandet av hårddisk(ar) kan ta flera minuter beroende på storleken."
