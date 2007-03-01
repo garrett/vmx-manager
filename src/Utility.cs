@@ -356,7 +356,12 @@ namespace VmxManager {
             Hal.Manager hal = new Hal.Manager ();
 
             List<string> devices = new List<string> ();
-            foreach (Hal.Device dev in hal.FindDeviceByCapabilityAsDevice ("storage.cdrom")) {
+            Hal.Device[] list = hal.FindDeviceByCapabilityAsDevice ("storage.cdrom");
+            if (list == null) {
+                return devices;
+            }
+
+            foreach (Hal.Device dev in list) {
                 devices.Add (dev.GetPropertyString ("block.device"));
             }
 
