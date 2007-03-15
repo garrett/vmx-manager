@@ -21,9 +21,12 @@ namespace VmxManager {
             CellRendererText renderer = new CellRendererText ();
             PackStart (renderer, true);
             AddAttribute (renderer, "text", 0);
-            
-            foreach (Hal.Device dev in hal.FindDeviceByCapabilityAsDevice ("storage.cdrom")) {
-                AddDevice (dev);
+
+            Hal.Device[] list = hal.FindDeviceByCapabilityAsDevice ("storage.cdrom");
+            if (list != null) {
+                foreach (Hal.Device dev in list) {
+                    AddDevice (dev);
+                }
             }
         }
 

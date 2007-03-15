@@ -1,3 +1,9 @@
+2007-03-15  James Willcox  <snorp@novell.com>
+
+	* configure.ac: bump to 0.2.7
+	* src/CdDriveCombo.cs: avoid a null ref exception when no drives
+	are found.  Seriously fixes 247589.
+
 2007-03-01  James Willcox  <snorp@novell.com>
 
 	* configure.ac: bump to 0.2.6
