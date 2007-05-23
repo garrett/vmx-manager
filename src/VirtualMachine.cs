@@ -62,10 +62,9 @@ namespace VmxManager {
         public event EventHandler NameChanged;
         public event EventHandler FileNameChanged;
 
-        private string LockFileName {
-            get { return file + ".WRITELOCK"; }
+        private string[] LockFileNames {
+            get { return new string[] { file + ".WRITELOCK", file + ".lck"}; }
         }
-
         
         public string FileName {
             get { return file; }
@@ -601,20 +600,37 @@ namespace VmxManager {
             }
         }
 
+        private bool IsLockFile (string path) {
+            foreach (string lockfile in LockFileNames) {
+                if (path == lockfile) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void OnFileCreated (object o, FileSystemEventArgs args) {
-            if (args.FullPath == LockFileName || args.FullPath == CheckPointFileName) {
+            if (IsLockFile (args.FullPath) || args.FullPath == CheckPointFileName) {
                 UpdateStatus ();
             }
         }
 
         private void OnFileDeleted (object o, FileSystemEventArgs args) {
-            if (args.FullPath == LockFileName || args.FullPath == CheckPointFileName) {
+            if (IsLockFile (args.FullPath) || args.FullPath == CheckPointFileName) {
                 UpdateStatus ();
             }
         }
 
         private void UpdateStatus () {
-            bool lockExists = File.Exists (LockFileName);
+            bool lockExists = false;
+            foreach (string lockfile in LockFileNames) {
+                if (File.Exists (lockfile) || Directory.Exists (lockfile)) {
+                    lockExists = true;
+                    break;
+                }
+            }
+                
             bool checkPointExists = File.Exists (CheckPointFileName);
 
             VirtualMachineStatus newstatus;

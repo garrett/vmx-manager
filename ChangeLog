@@ -1,3 +1,9 @@
+2007-05-23  James Willcox  <snorp@novell.com>
+
+	* configure.ac: bump to 0.2.8
+	* src/VirtualMachine.cs: VMware Player 2.0 uses different lock
+	files, so monitor those as well.
+
 2007-03-15  James Willcox  <snorp@novell.com>
 
 	* configure.ac: bump to 0.2.7
