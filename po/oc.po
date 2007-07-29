@@ -1,0 +1,420 @@
+# Occitan translation of vmx-manager.
+# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Yannig MARCHEGAY (yannig@marchegay.org) - 2006-2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vmx-manager\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-02-23 15:05+0100\n"
+"PO-Revision-Date: 2007-07-29 16:17+0200\n"
+"Last-Translator: Yannig MARCHEGAY <yannig@marchegay.org>\n"
+"Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);"
+
+#: ../data/vmx-manager.glade.h:1
+msgid "\n"
+msgstr "\n"
+
+#: ../data/vmx-manager.glade.h:3
+msgid ""
+"0\n"
+"1"
+msgstr ""
+"0\n"
+"1"
+
+#: ../data/vmx-manager.glade.h:5
+msgid "<b>Bus _Type:</b>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:6
+msgid "<b>Connection type:</b>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:7
+msgid "<b>Devices</b>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:8
+msgid "<b>General</b>"
+msgstr "<b>General</b>"
+
+#: ../data/vmx-manager.glade.h:9
+msgid "<b>Position:</b>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:10
+msgid ""
+"<b>There are currently no virtual machines.</b><i>\n"
+"You can add or create some using the buttons on the left side of this window."
+"</i>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:12
+msgid "<b>_Size:</b>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:13
+msgid "<span size=\"large\"><b>Common Tasks</b></span>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:14
+msgid "<span size=\"large\"><b>Machine Tasks</b></span>"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:15 ../src/MainWindow.cs:110
+msgid "Add Existing Machine"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:16
+msgid "Allocate entire disk in advance"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:17
+msgid ""
+"Bridged\n"
+"Host Only\n"
+"NAT"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:20
+msgid "Configure"
+msgstr "Configurar"
+
+#: ../data/vmx-manager.glade.h:21 ../src/CdConfigDialog.cs:37
+msgid "Configure CD-ROM Drive"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:22
+msgid "Configure Disk"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:23
+msgid "Configure Virtual Machine"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:24 ../src/MainWindow.cs:102
+msgid "Create Blank Machine"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:25 ../src/MainWindow.cs:106
+msgid "Create Machine From ISO"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:26
+msgid ""
+"IDE\n"
+"SCSI"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:28
+msgid "ISO file"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:29
+msgid "MB"
+msgstr "Mo"
+
+#: ../data/vmx-manager.glade.h:30
+msgid "Memory:"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:31
+msgid "Name:"
+msgstr "Nom :"
+
+#: ../data/vmx-manager.glade.h:32
+msgid "Operating System:"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:33
+msgid "Physical drive"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:34
+msgid "Remove"
+msgstr "Suprimir"
+
+#: ../data/vmx-manager.glade.h:35
+msgid "Select A ISO File"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:36
+msgid "Sound enabled"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:37
+msgid "Start"
+msgstr "Aviar"
+
+#: ../data/vmx-manager.glade.h:38
+msgid "USB enabled"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:39 ../data/vmx-manager.desktop.in.in.h:1
+msgid "Virtual Machine Manager"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:40
+msgid "_Add"
+msgstr "_Apondre"
+
+#: ../data/vmx-manager.glade.h:41
+msgid "_Configure"
+msgstr "_Configurar"
+
+#: ../data/vmx-manager.glade.h:42
+msgid "_Remove"
+msgstr "_Suprimir"
+
+#: ../data/vmx-manager.glade.h:43
+msgid "dialog1"
+msgstr ""
+
+#: ../data/vmx-manager.glade.h:44
+msgid "in GB"
+msgstr ""
+
+#: ../src/EthernetConfigDialog.cs:20
+msgid "Configure Ethernet"
+msgstr ""
+
+#. bridged
+#: ../src/EthernetConfigDialog.cs:51
+msgid ""
+"With a bridged configuration, the ethernet card will be connected to the "
+"same network as the host computer."
+msgstr ""
+
+#. host only
+#: ../src/EthernetConfigDialog.cs:55
+msgid ""
+"With this configuration, the ethernet card will be on a private network used "
+"only by the host computer and the virtual machine."
+msgstr ""
+
+#. nat
+#: ../src/EthernetConfigDialog.cs:59
+msgid ""
+"With this configuration, the virtual machine will connect to the host's "
+"network through NAT (Network Address Translation)"
+msgstr ""
+
+#: ../src/CdConfigDialog.cs:60 ../src/MainController.cs:115
+msgid "CD Images"
+msgstr ""
+
+#: ../src/MainWindow.cs:74
+msgid "<b>There are currently no virtual machines.</b>"
+msgstr ""
+
+#: ../src/MainWindow.cs:75
+msgid ""
+"You can add or create a new virtual machine using the buttons on the left"
+msgstr ""
+
+#: ../src/MainWindow.cs:90
+msgid "Start Machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:91
+msgid "Start the virtual machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:94
+msgid "Configure Machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:95
+msgid "Configure the connected devices"
+msgstr ""
+
+#: ../src/MainWindow.cs:98
+msgid "Remove Machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:99
+msgid "Remove the virtual machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:103
+msgid "Create a new empty virtual machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:107
+msgid "Create a new machine which boots from a ISO"
+msgstr ""
+
+#: ../src/MainWindow.cs:111
+msgid "Add an existing virtual machine"
+msgstr ""
+
+#: ../src/MainWindow.cs:126
+msgid "VMware Player not found"
+msgstr ""
+
+#: ../src/MainWindow.cs:127
+msgid "It will not be possible to run virtual machines."
+msgstr ""
+
+#: ../src/VirtualEthernet.cs:35
+msgid "Ethernet (Bridged)"
+msgstr ""
+
+#: ../src/VirtualEthernet.cs:37
+msgid "Ethernet (Host only)"
+msgstr ""
+
+#: ../src/VirtualEthernet.cs:39
+msgid "Ethernet (NAT)"
+msgstr ""
+
+#: ../src/VirtualEthernet.cs:41 ../src/ConfigDialog.cs:72
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: ../src/HardDiskConfigDialog.cs:29
+msgid "Configure Hard Disk"
+msgstr ""
+
+#: ../src/VirtualHardDisk.cs:429
+msgid "Failed to find mount point for disk"
+msgstr ""
+
+#: ../src/VirtualHardDisk.cs:433
+#, csharp-format
+msgid ""
+"You do not have enough free space to create this disk.  Please free up {0} "
+"of space."
+msgstr ""
+
+#: ../src/EntryPoint.cs:97
+msgid "An unexpected error occurred, Virtual Machine Manager will now exit:"
+msgstr ""
+
+#: ../src/VirtualMachine.cs:103
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../src/VirtualMachine.cs:329
+msgid "The specified file is not a valid virtual machine."
+msgstr ""
+
+#: ../src/VirtualMachine.cs:387
+msgid ""
+"There are two conflicting disks.  Please change the position of one of the "
+"disks and try again."
+msgstr ""
+
+#: ../src/Utility.cs:275
+msgid "Virtual Machine Manager Error"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:64
+msgid "Hard Disk"
+msgstr "Disc dur"
+
+#: ../src/ConfigDialog.cs:65
+msgid "Add a hard disk"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:68
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: ../src/ConfigDialog.cs:69
+msgid "Add a CD-ROM drive"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:73
+msgid "Add an ethernet device"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:76
+msgid "Floppy"
+msgstr "Disqueta"
+
+#: ../src/ConfigDialog.cs:77
+msgid "Add a floppy drive"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:240
+msgid "Could not save changes"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:303
+msgid "Would you like to delete the disk files, or keep them?"
+msgstr ""
+
+#: ../src/ConfigDialog.cs:304
+msgid "If you delete them, all data on the disk will be lost."
+msgstr ""
+
+#: ../src/ConfigDialog.cs:305 ../src/MainController.cs:69
+msgid "Keep"
+msgstr ""
+
+#: ../src/MainController.cs:67
+msgid "Would you like to delete the virtual machine files, or keep them?"
+msgstr ""
+
+#: ../src/MainController.cs:68
+msgid "If you delete them, all data in the virtual machine will be lost."
+msgstr ""
+
+#: ../src/MainController.cs:108
+msgid "Choose a CD image"
+msgstr ""
+
+#: ../src/MainController.cs:130
+msgid "Choose a virtual machine file"
+msgstr ""
+
+#: ../src/MainController.cs:138
+msgid "Virtual Machines"
+msgstr ""
+
+#: ../src/VirtualMachineManager.cs:123
+msgid "New Virtual Machine"
+msgstr ""
+
+#: ../src/VirtualMachineManager.cs:133
+#, csharp-format
+msgid "{0} #{1}"
+msgstr "{0} #{1}"
+
+#: ../src/VirtualMachineManager.cs:223
+msgid "Failed to load launcher"
+msgstr ""
+
+#: ../src/VirtualMachineManager.cs:254
+msgid "VMware Virtual Machine Launcher"
+msgstr ""
+
+#: ../src/VMView.cs:89
+msgid "Running"
+msgstr "En foncionament"
+
+#: ../src/VMView.cs:91
+msgid "Suspended"
+msgstr ""
+
+#: ../src/VMView.cs:93
+msgid "Powered Off"
+msgstr ""
+
+#: ../src/DiskProgressPane.cs:30
+msgid "<b>Creating Hard Disks</b>"
+msgstr ""
+
+#: ../src/DiskProgressPane.cs:31
+msgid ""
+"Creating the hard disk(s) may take several minutes, depending on their size."
+msgstr ""
+
