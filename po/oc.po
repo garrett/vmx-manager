@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: vmx-manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-02-23 15:05+0100\n"
-"PO-Revision-Date: 2007-07-29 16:17+0200\n"
+"PO-Revision-Date: 2007-08-20 19:55+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,7 @@ msgstr ""
 
 #: ../data/vmx-manager.glade.h:7
 msgid "<b>Devices</b>"
-msgstr ""
+msgstr "<b>Periferics</b>"
 
 #: ../data/vmx-manager.glade.h:8
 msgid "<b>General</b>"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: ../data/vmx-manager.glade.h:22
 msgid "Configure Disk"
-msgstr ""
+msgstr "Configurar lo disc"
 
 #: ../data/vmx-manager.glade.h:23
 msgid "Configure Virtual Machine"
@@ -112,10 +112,12 @@ msgid ""
 "IDE\n"
 "SCSI"
 msgstr ""
+"IDE\n"
+"SCSI"
 
 #: ../data/vmx-manager.glade.h:28
 msgid "ISO file"
-msgstr ""
+msgstr "fichièr ISO"
 
 #: ../data/vmx-manager.glade.h:29
 msgid "MB"
@@ -179,7 +181,7 @@ msgstr ""
 
 #: ../data/vmx-manager.glade.h:44
 msgid "in GB"
-msgstr ""
+msgstr "en Go"
 
 #: ../src/EthernetConfigDialog.cs:20
 msgid "Configure Ethernet"
@@ -208,7 +210,7 @@ msgstr ""
 
 #: ../src/CdConfigDialog.cs:60 ../src/MainController.cs:115
 msgid "CD Images"
-msgstr ""
+msgstr "Imatges CD"
 
 #: ../src/MainWindow.cs:74
 msgid "<b>There are currently no virtual machines.</b>"
@@ -273,7 +275,7 @@ msgstr ""
 
 #: ../src/VirtualEthernet.cs:39
 msgid "Ethernet (NAT)"
-msgstr ""
+msgstr "Ethernet (NAT)"
 
 #: ../src/VirtualEthernet.cs:41 ../src/ConfigDialog.cs:72
 msgid "Ethernet"
@@ -370,7 +372,7 @@ msgstr ""
 
 #: ../src/MainController.cs:108
 msgid "Choose a CD image"
-msgstr ""
+msgstr "Causissètz un imatge CD"
 
 #: ../src/MainController.cs:130
 msgid "Choose a virtual machine file"
