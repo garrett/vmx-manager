@@ -184,36 +184,8 @@ namespace VmxManager {
                     machineTasksLabel.Style = style;
                     commonTasksLabel.Style = style;
                 }
-            } catch (Exception) {
+            } catch {
             }
-        }
-
-        protected override bool OnExposeEvent (Gdk.EventExpose e) {
-            Gdk.GC gc = new Gdk.GC (this.GdkWindow);
-            
-            gc.Foreground = Style.Background (StateType.Active);
-
-            GdkWindow.DrawRectangle (gc, true,
-                                     leftPane.Allocation.X, leftPane.Allocation.Y,
-                                     leftPane.Allocation.Width, leftPane.Allocation.Height);
-
-            gc.Foreground = Style.Background (StateType.Selected);
-            gc.SetLineAttributes (2, Gdk.LineStyle.Solid, Gdk.CapStyle.Butt, Gdk.JoinStyle.Miter);
-
-            if (Direction == TextDirection.Rtl) {
-                GdkWindow.DrawLine (gc, leftPane.Allocation.X, leftPane.Allocation.Y,
-                                    leftPane.Allocation.X, leftPane.Allocation.Y + leftPane.Allocation.Height - 1);
-            } else {
-                GdkWindow.DrawLine (gc, leftPane.Allocation.X + leftPane.Allocation.Width,
-                                    leftPane.Allocation.Y, leftPane.Allocation.X + leftPane.Allocation.Width,
-                                    leftPane.Allocation.Y + leftPane.Allocation.Height - 1);
-            }
-            
-            foreach (Widget child in Children) {
-                PropagateExpose (child, e);
-            }
-
-            return false;
         }
 
         public void SetContent (Widget widget) {
