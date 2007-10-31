@@ -10,4 +10,3 @@ StartupNotify=true
 Terminal=false
 Type=Application
 Categories=Application;Utility;Settings;
-X-SuSE-translate=true
