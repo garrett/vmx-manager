@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vmx-manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-23 15:05+0100\n"
-"PO-Revision-Date: 2007-02-23 15:01+0100\n"
+"POT-Creation-Date: 2007-12-31 11:57+0100\n"
+"PO-Revision-Date: 2007-12-31 11:57+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -50,12 +50,10 @@ msgstr "<b>Position:</b>"
 #: ../data/vmx-manager.glade.h:10
 msgid ""
 "<b>There are currently no virtual machines.</b><i>\n"
-"You can add or create some using the buttons on the left side of this window."
-"</i>"
+"You can add or create some using the buttons on the left side of this window.</i>"
 msgstr ""
 "<b>Det finns för närvarande inga virtuella maskiner.</b><i>\n"
-"Du kan lägga till eller skapa några med hjälp av knapparna på vänster sida "
-"av det här fönstret.</i>"
+"Du kan lägga till eller skapa några med hjälp av knapparna på vänster sida av det här fönstret.</i>"
 
 #: ../data/vmx-manager.glade.h:12
 msgid "<b>_Size:</b>"
@@ -69,7 +67,8 @@ msgstr "<span size=\"large\"><b>Vanliga uppgifter</b></span>"
 msgid "<span size=\"large\"><b>Machine Tasks</b></span>"
 msgstr "<span size=\"large\"><b>Maskinuppgifter</b></span>"
 
-#: ../data/vmx-manager.glade.h:15 ../src/MainWindow.cs:110
+#: ../data/vmx-manager.glade.h:15
+#: ../src/MainWindow.cs:110
 msgid "Add Existing Machine"
 msgstr "Lägg till befintlig maskin"
 
@@ -91,7 +90,8 @@ msgstr ""
 msgid "Configure"
 msgstr "Konfigurera"
 
-#: ../data/vmx-manager.glade.h:21 ../src/CdConfigDialog.cs:37
+#: ../data/vmx-manager.glade.h:21
+#: ../src/CdConfigDialog.cs:37
 msgid "Configure CD-ROM Drive"
 msgstr "Konfigurera cd-rom-enhet"
 
@@ -103,13 +103,15 @@ msgstr "Konfigurera disk"
 msgid "Configure Virtual Machine"
 msgstr "Konfigurera virtuell maskin"
 
-#: ../data/vmx-manager.glade.h:24 ../src/MainWindow.cs:102
+#: ../data/vmx-manager.glade.h:24
+#: ../src/MainWindow.cs:102
 msgid "Create Blank Machine"
 msgstr "Skapa tom maskin"
 
-#: ../data/vmx-manager.glade.h:25 ../src/MainWindow.cs:106
+#: ../data/vmx-manager.glade.h:25
+#: ../src/MainWindow.cs:106
 msgid "Create Machine From ISO"
-msgstr "Skapa maskin från iso-avbild"
+msgstr "Skapa maskin från iso-avbildning"
 
 #: ../data/vmx-manager.glade.h:26
 msgid ""
@@ -163,7 +165,8 @@ msgstr "Starta"
 msgid "USB enabled"
 msgstr "USB aktiverat"
 
-#: ../data/vmx-manager.glade.h:39 ../data/vmx-manager.desktop.in.in.h:1
+#: ../data/vmx-manager.glade.h:39
+#: ../data/vmx-manager.desktop.in.in.h:1
 msgid "Virtual Machine Manager"
 msgstr "Hanterare för virtuella maskiner"
 
@@ -193,45 +196,31 @@ msgstr "Konfigurera Ethernet"
 
 #. bridged
 #: ../src/EthernetConfigDialog.cs:51
-msgid ""
-"With a bridged configuration, the ethernet card will be connected to the "
-"same network as the host computer."
-msgstr ""
-"Med ett bryggad konfiguration kommer Ethernet-kortet att vara anslutet till "
-"samma nätverk som värddatorn."
+msgid "With a bridged configuration, the ethernet card will be connected to the same network as the host computer."
+msgstr "Med ett bryggad konfiguration kommer Ethernet-kortet att vara anslutet till samma nätverk som värddatorn."
 
 #. host only
 #: ../src/EthernetConfigDialog.cs:55
-msgid ""
-"With this configuration, the ethernet card will be on a private network used "
-"only by the host computer and the virtual machine."
-msgstr ""
-"Med den här konfigurationen kommer Ethernet-kortet att vara på ett privat "
-"nätverk som endast används av värddatorn och den virtuella maskinen."
+msgid "With this configuration, the ethernet card will be on a private network used only by the host computer and the virtual machine."
+msgstr "Med den här konfigurationen kommer Ethernet-kortet att vara på ett privat nätverk som endast används av värddatorn och den virtuella maskinen."
 
 #. nat
 #: ../src/EthernetConfigDialog.cs:59
-msgid ""
-"With this configuration, the virtual machine will connect to the host's "
-"network through NAT (Network Address Translation)"
-msgstr ""
-"Med den här konfigurationen kommer den virtuella maskinen att vara ansluten "
-"till värdens nätverket via NAT (Network Address Translation)"
+msgid "With this configuration, the virtual machine will connect to the host's network through NAT (Network Address Translation)"
+msgstr "Med den här konfigurationen kommer den virtuella maskinen att vara ansluten till värdens nätverket via NAT (Network Address Translation)"
 
-#: ../src/CdConfigDialog.cs:60 ../src/MainController.cs:115
+#: ../src/CdConfigDialog.cs:60
+#: ../src/MainController.cs:115
 msgid "CD Images"
-msgstr "CD-avbilder"
+msgstr "Cd-avbildningar"
 
 #: ../src/MainWindow.cs:74
 msgid "<b>There are currently no virtual machines.</b>"
 msgstr "<b>Det finns för närvarande inga virtuella maskiner.</b>"
 
 #: ../src/MainWindow.cs:75
-msgid ""
-"You can add or create a new virtual machine using the buttons on the left"
-msgstr ""
-"Du kan lägga till eller skapa en ny virtuell maskin med hjälp av knapparna "
-"till vänster"
+msgid "You can add or create a new virtual machine using the buttons on the left"
+msgstr "Du kan lägga till eller skapa en ny virtuell maskin med hjälp av knapparna till vänster"
 
 #: ../src/MainWindow.cs:90
 msgid "Start Machine"
@@ -263,7 +252,7 @@ msgstr "Skapa en ny tom virtuell maskin"
 
 #: ../src/MainWindow.cs:107
 msgid "Create a new machine which boots from a ISO"
-msgstr "Skapa en ny maskin som startar upp från en iso-avbild"
+msgstr "Skapa en ny maskin som startar upp från en iso-avbildning"
 
 #: ../src/MainWindow.cs:111
 msgid "Add an existing virtual machine"
@@ -289,7 +278,8 @@ msgstr "Ethernet (Endast värd)"
 msgid "Ethernet (NAT)"
 msgstr "Ethernet (NAT)"
 
-#: ../src/VirtualEthernet.cs:41 ../src/ConfigDialog.cs:72
+#: ../src/VirtualEthernet.cs:41
+#: ../src/ConfigDialog.cs:72
 msgid "Ethernet"
 msgstr "Ethernet"
 
@@ -303,34 +293,24 @@ msgstr "Misslyckades med att hitta monteringspunkt för disk"
 
 #: ../src/VirtualHardDisk.cs:433
 #, csharp-format
-msgid ""
-"You do not have enough free space to create this disk.  Please free up {0} "
-"of space."
-msgstr ""
-"Du har inte tillräckligt med ledigt utrymme för att skapa den här disken.  "
-"Frigör {0} utrymme."
+msgid "You do not have enough free space to create this disk.  Please free up {0} of space."
+msgstr "Du har inte tillräckligt med ledigt utrymme för att skapa den här disken.  Frigör {0} utrymme."
 
 #: ../src/EntryPoint.cs:97
 msgid "An unexpected error occurred, Virtual Machine Manager will now exit:"
-msgstr ""
-"Ett oväntat fel inträffade, Hanterare för virtuella maskiner kommer nu att "
-"avslutas:"
+msgstr "Ett oväntat fel inträffade, Hanterare för virtuella maskiner kommer nu att avslutas:"
 
-#: ../src/VirtualMachine.cs:103
+#: ../src/VirtualMachine.cs:102
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/VirtualMachine.cs:329
+#: ../src/VirtualMachine.cs:328
 msgid "The specified file is not a valid virtual machine."
 msgstr "Angiven fil är inte en giltig virtuell maskin."
 
-#: ../src/VirtualMachine.cs:387
-msgid ""
-"There are two conflicting disks.  Please change the position of one of the "
-"disks and try again."
-msgstr ""
-"Det finns två diskar i konflikt.  Ändra positionen för en av diskarna och "
-"försök igen."
+#: ../src/VirtualMachine.cs:386
+msgid "There are two conflicting disks.  Please change the position of one of the disks and try again."
+msgstr "Det finns två diskar i konflikt.  Ändra positionen för en av diskarna och försök igen."
 
 #: ../src/Utility.cs:275
 msgid "Virtual Machine Manager Error"
@@ -376,23 +356,22 @@ msgstr "Vill du ta bort diskfilerna eller behålla dem?"
 msgid "If you delete them, all data on the disk will be lost."
 msgstr "Om du tar bort dem kommer all data på disken att förloras."
 
-#: ../src/ConfigDialog.cs:305 ../src/MainController.cs:69
+#: ../src/ConfigDialog.cs:305
+#: ../src/MainController.cs:69
 msgid "Keep"
 msgstr "Behåll"
 
 #: ../src/MainController.cs:67
 msgid "Would you like to delete the virtual machine files, or keep them?"
-msgstr ""
-"Vill du ta bort de filerna för den virtuella maskinen eller behålla dem?"
+msgstr "Vill du ta bort de filerna för den virtuella maskinen eller behålla dem?"
 
 #: ../src/MainController.cs:68
 msgid "If you delete them, all data in the virtual machine will be lost."
-msgstr ""
-"Om du tar bort dem kommer all data i den virtuella maskinen att förloras."
+msgstr "Om du tar bort dem kommer all data i den virtuella maskinen att förloras."
 
 #: ../src/MainController.cs:108
 msgid "Choose a CD image"
-msgstr "Välj en cd-avbild"
+msgstr "Välj en cd-avbildning"
 
 #: ../src/MainController.cs:130
 msgid "Choose a virtual machine file"
@@ -436,6 +415,6 @@ msgid "<b>Creating Hard Disks</b>"
 msgstr "<b>Skapar hårddiskar</b>"
 
 #: ../src/DiskProgressPane.cs:31
-msgid ""
-"Creating the hard disk(s) may take several minutes, depending on their size."
+msgid "Creating the hard disk(s) may take several minutes, depending on their size."
 msgstr "Skapandet av hårddisk(ar) kan ta flera minuter beroende på storleken."
+
