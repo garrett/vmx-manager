@@ -369,10 +369,14 @@ namespace VmxManager {
         }
 
         public static NetworkType GetDefaultNetworkType () {
-            Hal.Device computer = new Hal.Device ("/org/freedesktop/Hal/devices/computer");
-            if (computer.GetPropertyString ("system.formfactor") == "laptop") {
-                return NetworkType.Nat;
-            } else {
+            try {
+                Hal.Device computer = new Hal.Device ("/org/freedesktop/Hal/devices/computer");
+                if (computer.GetPropertyString ("system.formfactor") == "laptop") {
+                    return NetworkType.Nat;
+                } else {
+                    return NetworkType.Bridged;
+                }
+            } catch (Exception e) {
                 return NetworkType.Bridged;
             }
         }

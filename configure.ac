@@ -5,7 +5,7 @@ AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL([0.21])
 
-PKG_CHECK_MODULES(VMXMAN, gtk-sharp-2.0 glade-sharp-2.0 gnome-sharp-2.0)
+PKG_CHECK_MODULES(VMXMAN, gtk-sharp-2.0 glade-sharp-2.0 gnome-sharp-2.0 ndesk-dbus-glib-1.0)
 VMXMAN_LIBS="$VMXMAN_LIBS -r:Mono.Posix"
 AC_SUBST(VMXMAN_LIBS)
 
@@ -25,8 +25,6 @@ AM_GLIB_GNU_GETTEXT
 
 AC_OUTPUT([
 Makefile
-dbus-sharp/Makefile
-dbus-sharp/NDesk.DBus.GLib.dll.config
 hal-sharp/Makefile
 src/Makefile
 src/vmx-manager

@@ -1,3 +1,9 @@
+2008-05-02  James Willcox  <snorp@novell.com>
+
+	* configure.ac: bump to 0.2.9
+	* src/Utility.cs: Be more careful getting default network type
+	* Removed bundled dbus-sharp, rely on external one
+
 2007-05-23  James Willcox  <snorp@novell.com>
 
 	* configure.ac: bump to 0.2.8

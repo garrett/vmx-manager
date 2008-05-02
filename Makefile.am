@@ -1,4 +1,4 @@
-SUBDIRS = dbus-sharp hal-sharp src data po
+SUBDIRS = hal-sharp src data po
 
 EXTRA_DIST =			\
 	intltool-extract.in	\
