@@ -567,6 +567,7 @@ namespace VmxManager {
             File.Delete (Path.Combine (dir, Name + ".vmsd"));
             File.Delete (Path.Combine (dir, Name + ".vmem"));
             File.Delete (file);
+            File.Delete (file + "f"); // foo.xmxf
 
             if (Directory.GetFiles (dir).Length == 0 &&
                 Directory.GetDirectories (dir).Length == 0) {
